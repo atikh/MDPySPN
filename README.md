@@ -59,13 +59,6 @@ t2 = Transition(label="Transition 2", t_type="I")
 t2.set_weight(weight=0.8)
 ```
 
-In our multi-dimensional model, we define transitions that can affect the values of dimensions tracked by "dimension_holder" places. These transitions can induce changes in dimensions either by a fixed value or by a rate that is multiplied by time.
-Each transition can be linked to one or more "dimension_holder" places, and the changes in these places are determined based on predefined values associated with the transitions. The types of changes that can occur are:
-
-* Fixed Value Changes: The dimension increases or decreases by a specified fixed amount whenever the transition is fired.
-* Rate-based Changes: The dimension changes at a specified rate, multiplied by the duration of time over which the transition occurs.
-t2.add_dimension_change("energy", "rate", 4)
-t2.add_dimension_change("waste", "fixed",  20)
 
 For timed transitions, some of the supported distributions are:
 
@@ -80,6 +73,16 @@ For timed transitions, some of the supported distributions are:
 | Weibull ("weibull_min")| `a`, `b`, `c`    |
 
 More distributions can be easily implemented in `RNGFactory.py`. See [Scipy's documentation](https://docs.scipy.org/doc/scipy/reference/stats.html) for details regarding the distributions and their parameters.
+
+In our multi-dimensional model, we define transitions that can affect the values of dimensions tracked by "dimension_holder" places. These transitions can induce changes in dimensions either by a fixed value or by a rate that is multiplied by time.
+Each transition can be linked to one or more "dimension_holder" places, and the changes in these places are determined based on predefined values associated with the transitions. The types of changes that can occur are:
+
+* Fixed Value Changes: The dimension increases or decreases by a specified fixed amount whenever the transition is fired.
+* Rate-based Changes: The dimension changes at a specified rate, multiplied by the duration of time over which the transition occurs.
+```bash
+t2.add_dimension_change("energy", "rate", 4)
+t2.add_dimension_change("waste", "fixed",  20)
+```
 
 ### Guard Functions for Transitions
 
