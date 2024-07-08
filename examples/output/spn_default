@@ -1,0 +1,27 @@
+digraph {
+	graph [rankdir=TB]
+	subgraph cluster_dimensions {
+		color=lightgrey style=filled
+		label="Summary of Dimensions" labeljust=l labelloc=t
+		summary [label="energy: 100" fontcolor=blue fontsize=12 shape=plaintext]
+	}
+	Preprocess [label=0 shape=circle]
+	"Production Process" [label=0 shape=circle]
+	PhEnegery1 [label="PhEnegery1
+energy = 100" fillcolor=lightblue shape=ellipse style=filled]
+	PhWaste1 [label=5 shape=circle]
+	PhEnegery2 [label=5 shape=circle]
+	Arrive [label="" shape=rectangle]
+	Arrive_label [label="Arrive (T)" fontcolor=black shape=plaintext]
+	Arrive -> Preprocess
+	Preprocesses [label="" shape=rectangle]
+	Preprocesses_label [label="Preprocesses (T)" fontcolor=black shape=plaintext]
+	Preprocess -> Preprocesses
+	Preprocesses -> "Production Process"
+	Preprocesses -> PhEnegery1
+	Preprocesses -> PhWaste1
+	Approach_Server2 [label="" fillcolor=black fontcolor=white shape=rectangle style=filled]
+	Approach_Server2_label [label="Approach_Server2 (I)" fontcolor=black shape=plaintext]
+	"Production Process" -> Approach_Server2
+	Approach_Server2 -> PhEnegery2
+}

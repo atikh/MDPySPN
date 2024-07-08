@@ -1,0 +1,30 @@
+digraph {
+	graph [rankdir=TB]
+	node [fillcolor=lightgrey shape=plaintext style=filled]
+	dimension_summary [label="Summary of Dimensions:
+energy: 795.23
+waste: 140.00
+"]
+	node [fillcolor="" shape=ellipse style=""]
+	Preprocess [label=7 fixedsize=true height=0.6 shape=circle width=0.6 xlabel=""]
+	"Production Process" [label="" fixedsize=true height=0.6 shape=circle width=0.6 xlabel=""]
+	PhEnegery1 [label="PhEnegery1
+energy = 25.23" fillcolor=lightblue fontsize=10 shape=ellipse style=filled]
+	PhWaste1 [label="PhWaste1
+waste = 140.00" fillcolor=lightblue fontsize=10 shape=ellipse style=filled]
+	PhEnegery2 [label="PhEnegery2
+energy = 770.00" fillcolor=lightblue fontsize=10 shape=ellipse style=filled]
+	Arrive [label="" fixedsize=true height=0.2 shape=rectangle width=0.6 xlabel="Arrive
+expon"]
+	Arrive -> Preprocess [label=""]
+	Preprocesses [label="" fixedsize=true height=0.2 shape=rectangle width=0.6 xlabel="Preprocesses
+expon"]
+	Preprocess -> Preprocesses [label=""]
+	Preprocesses -> "Production Process" [label=""]
+	Preprocesses -> PhEnegery1 [label=""]
+	Preprocesses -> PhWaste1 [label=""]
+	Approach_Server2 [label="" color=black fixedsize=true height=0.2 shape=rectangle style=filled width=0.6 xlabel="Approach_Server2
+1"]
+	"Production Process" -> Approach_Server2 [label=""]
+	Approach_Server2 -> PhEnegery2 [label=""]
+}
