@@ -1,0 +1,20 @@
+digraph {
+	Preprocess [label=<&#9679;> fixedsize=true height=0.6 shape=circle width=0.6]
+	"Production Process" [label="" fixedsize=true height=0.6 shape=circle width=0.6]
+	PhEnegery1 [label=8 fixedsize=true height=0.6 shape=circle width=0.6]
+	PhWaste1 [label=8 fixedsize=true height=0.6 shape=circle width=0.6]
+	PhEnegery2 [label=8 fixedsize=true height=0.6 shape=circle width=0.6]
+	Arrive [label="" color=black fixedsize=true height=0.2 shape=rectangle width=0.6 xlabel="Arrive
+expon"]
+	Arrive -> Preprocess
+	Preprocesses [label="" color=black fixedsize=true height=0.2 shape=rectangle width=0.6 xlabel="Preprocesses
+expon"]
+	Preprocess -> Preprocesses
+	Preprocesses -> "Production Process"
+	Preprocesses -> PhEnegery1
+	Preprocesses -> PhWaste1
+	Approach_Server2 [label="" color=black fixedsize=true height=0.2 shape=rectangle style=filled width=0.6 xlabel="Approach_Server2
+1"]
+	"Production Process" -> Approach_Server2
+	Approach_Server2 -> PhEnegery2
+}

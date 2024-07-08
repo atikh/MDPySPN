@@ -1,0 +1,158 @@
+Event,Time,Marking
+Preprocess,0.79,0
+Preprocess,0.79,1
+Preprocess,0.83,1
+Preprocess,0.83,2
+Preprocess,1.27,2
+Preprocess,1.27,3
+Preprocess,2.29,3
+Production Process,2.29,0
+PhEnegery1,2.29,0
+PhWaste1,2.29,0
+Preprocess,2.29,2
+Production Process,2.29,1
+Preprocess,2.29,2
+PhEnegery1,2.29,1
+Preprocess,2.29,2
+PhWaste1,2.29,1
+PhEnegery1,2.29,6.017002510632529
+PhWaste1,2.29,20
+Production Process,2.29,1
+PhEnegery2,2.29,0
+Production Process,2.29,0
+PhEnegery2,2.29,1
+PhEnegery2,2.29,110
+Preprocess,2.71,2
+Production Process,2.71,0
+PhEnegery1,2.71,1
+PhWaste1,2.71,1
+Preprocess,2.71,1
+Production Process,2.71,1
+Preprocess,2.71,1
+PhEnegery1,2.71,2
+Preprocess,2.71,1
+PhWaste1,2.71,2
+PhEnegery1,2.71,7.686310125758471
+PhWaste1,2.71,40
+Production Process,2.71,1
+PhEnegery2,2.71,1
+Production Process,2.71,0
+PhEnegery2,2.71,2
+PhEnegery2,2.71,220
+Preprocess,3.26,1
+Preprocess,3.26,2
+Preprocess,3.69,2
+Production Process,3.69,0
+PhEnegery1,3.69,2
+PhWaste1,3.69,2
+Preprocess,3.69,1
+Production Process,3.69,1
+Preprocess,3.69,1
+PhEnegery1,3.69,3
+Preprocess,3.69,1
+PhWaste1,3.69,3
+PhEnegery1,3.69,11.607204220780678
+PhWaste1,3.69,60
+Production Process,3.69,1
+PhEnegery2,3.69,2
+Production Process,3.69,0
+PhEnegery2,3.69,3
+PhEnegery2,3.69,330
+Preprocess,4.16,1
+Production Process,4.16,0
+PhEnegery1,4.16,3
+PhWaste1,4.16,3
+Preprocess,4.16,0
+Production Process,4.16,1
+Preprocess,4.16,0
+PhEnegery1,4.16,4
+Preprocess,4.16,0
+PhWaste1,4.16,4
+PhEnegery1,4.16,13.468453208228068
+PhWaste1,4.16,80
+Production Process,4.16,1
+PhEnegery2,4.16,3
+Production Process,4.16,0
+PhEnegery2,4.16,4
+PhEnegery2,4.16,440
+Preprocess,4.38,0
+Preprocess,4.38,1
+Preprocess,4.45,1
+Production Process,4.45,0
+PhEnegery1,4.45,4
+PhWaste1,4.45,4
+Preprocess,4.45,0
+Production Process,4.45,1
+Preprocess,4.45,0
+PhEnegery1,4.45,5
+Preprocess,4.45,0
+PhWaste1,4.45,5
+PhEnegery1,4.45,13.782992739659877
+PhWaste1,4.45,100
+Production Process,4.45,1
+PhEnegery2,4.45,4
+Production Process,4.45,0
+PhEnegery2,4.45,5
+PhEnegery2,4.45,550
+Preprocess,5.12,0
+Preprocess,5.12,1
+Preprocess,5.13,1
+Production Process,5.13,0
+PhEnegery1,5.13,5
+PhWaste1,5.13,5
+Preprocess,5.13,0
+Production Process,5.13,1
+Preprocess,5.13,0
+PhEnegery1,5.13,6
+Preprocess,5.13,0
+PhWaste1,5.13,6
+PhEnegery1,5.13,13.812061468016275
+PhWaste1,5.13,120
+Production Process,5.13,1
+PhEnegery2,5.13,5
+Production Process,5.13,0
+PhEnegery2,5.13,6
+PhEnegery2,5.13,660
+Preprocess,6.63,0
+Preprocess,6.63,1
+Preprocess,6.98,1
+Preprocess,6.98,2
+Preprocess,7.74,2
+Preprocess,7.74,3
+Preprocess,8.34,3
+Preprocess,8.34,4
+Preprocess,8.8,4
+Preprocess,8.8,5
+Preprocess,8.98,5
+Preprocess,8.98,6
+Preprocess,9.43,6
+Preprocess,9.43,7
+Preprocess,9.48,7
+Production Process,9.48,0
+PhEnegery1,9.48,6
+PhWaste1,9.48,6
+Preprocess,9.48,6
+Production Process,9.48,1
+Preprocess,9.48,6
+PhEnegery1,9.48,7
+Preprocess,9.48,6
+PhWaste1,9.48,7
+PhEnegery1,9.48,25.22985759449677
+PhWaste1,9.48,140
+Production Process,9.48,1
+PhEnegery2,9.48,6
+Production Process,9.48,0
+PhEnegery2,9.48,7
+PhEnegery2,9.48,770
+Preprocess,9.56,6
+Preprocess,9.56,7
+Preprocess,10,7
+Preprocess,10,7
+Production Process,10,0
+Production Process,10,0
+PhEnegery1,10,7
+PhEnegery1,10,7
+PhWaste1,10,7
+PhWaste1,10,7
+PhEnegery2,10,7
+PhEnegery2,10,7
