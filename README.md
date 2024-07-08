@@ -1,11 +1,10 @@
 <p align="center">
     <img src="https://img.shields.io/badge/contributions-welcome!-green" alt="Contributions welcome!"/>
-    <img src="https://img.shields.io/github/last-commit/jo-chr/spn-simulator?color=blue">
 </p>
 
-# PySPN
+# MDPySPN
 
-A lightweight tool for modeling and simulation of Stochastic Petri Nets (SPNs).
+An extended version of PySPN lightweight tool for modeling and simulation of Multi-Dimensional Stochastic Petri Nets (MDSPNs).
 
 ## Getting Started
 
@@ -14,9 +13,9 @@ A lightweight tool for modeling and simulation of Stochastic Petri Nets (SPNs).
 ### via git
 
 ```bash
-git clone https://github.com/jo-chr/pyspn.git  # 1. Clone repository
+git clone https://github.com/atikh/MDPySPN.git  # 1. Clone repository
 pip install -r requirements.txt  # 2. Install requirements
-python3 examples/one_server.py  # 3. Run single-server queue example
+python3 examples/Main.py  # 3. Run the code
 ```
 
 ## Modeling
@@ -42,6 +41,10 @@ Find sample SPNs under `examples/`. Currently, places, timed transitions (t\_typ
 A place with its required arguments is defined like so:
 ```bash
 p1 = Place(label="Place 1", n_tokens=0)
+```
+Additionally, In this code, we define special places known as "dimension_holder" places. These places are responsible for keeping track of the effects that certain transitions have on specific dimensions when they are fired. The dimension that each "dimension_holder" place monitors is specified by the "dimension_tracked" attribute.
+```bash
+p3 = Place(label="PH1", is_dimension_holder=True, dimension_tracked='energy', initial_value=0)
 ```
 
 ### Transitions
@@ -71,6 +74,20 @@ For timed transitions, some of the supported distributions are:
 | Weibull ("weibull_min")| `a`, `b`, `c`    |
 
 More distributions can be easily implemented in `RNGFactory.py`. See [Scipy's documentation](https://docs.scipy.org/doc/scipy/reference/stats.html) for details regarding the distributions and their parameters.
+
+Additionally, In our model, we define transitions that can affect the values of dimensions tracked by "dimension_holder" places. These transitions can induce changes in dimensions either by a fixed value or by a rate that is multiplied by time.
+
+Each transition can be linked to one or more "dimension_holder" places, and the changes in these places are determined based on predefined values associated with the transitions. The types of changes that can occur are:
+
+* Fixed Value Changes: The dimension increases or decreases by a specified fixed amount whenever the transition is fired.
+* Rate-based Changes: The dimension changes at a specified rate, which is multiplied by the duration of time over which the transition occurs.
+
+```bash
+t2.set_distribution("expon", a=0.0, b=1.0/1.0)
+t2.add_dimension_change("energy", "rate", 4)
+t2.add_dimension_change("waste", "fixed", 20)
+```
+
 
 ### Guard Functions for Transitions
 
