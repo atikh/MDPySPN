@@ -1,7 +1,11 @@
-# MDPySPN
-A lightweight tool for Multi-Dimensional Stochastic Petri Nets Simulation in Python.
-MDPySPN is an extended version of PySPN which you can find in the following link:
-https://github.com/jo-chr/pyspn
+<p align="center">
+    <img src="https://img.shields.io/badge/contributions-welcome!-green" alt="Contributions welcome!"/>
+    <img src="https://img.shields.io/github/last-commit/jo-chr/spn-simulator?color=blue">
+</p>
+
+# PySPN
+
+A lightweight tool for modeling and simulation of Stochastic Petri Nets (SPNs).
 
 ## Getting Started
 
@@ -10,16 +14,14 @@ https://github.com/jo-chr/pyspn
 ### via git
 
 ```bash
-git clone https://github.com/atikh/MDPySPN  # 1. Clone repository
+git clone https://github.com/jo-chr/pyspn.git  # 1. Clone repository
 pip install -r requirements.txt  # 2. Install requirements
-python3 examples/Main.py  # 3. Run the example code
+python3 examples/one_server.py  # 3. Run single-server queue example
 ```
 
 ## Modeling
-Initially, we define the dimensions in our model:
-Total_Dimensions = ['time', 'energy', 'waste']
 
-Formally, the class of SPNs that can be modeled using *MDPySPN* is defined as:
+Formally, the class of SPNs that can be modeled using *PySPN* is defined as:
 
 $$SPN = (P, T, A, G, m_0)$$
 
@@ -41,9 +43,6 @@ A place with its required arguments is defined like so:
 ```bash
 p1 = Place(label="Place 1", n_tokens=0)
 ```
-In this code, we define special places known as "dimension_holder" places. These places are responsible for tracking the effects of certain transitions on specific dimensions when they are fired. The dimension that each "dimension_holder" place monitors is specified by the "dimension_tracked" attribute.
-p3 = Place(label="PH1", is_dimension_holder=True, dimension_tracked='energy', initial_value=0)
-
 
 ### Transitions
 
@@ -59,7 +58,6 @@ t2 = Transition(label="Transition 2", t_type="I")
 t2.set_weight(weight=0.8)
 ```
 
-
 For timed transitions, some of the supported distributions are:
 
 | Distribution           | Parameter        |
@@ -73,16 +71,6 @@ For timed transitions, some of the supported distributions are:
 | Weibull ("weibull_min")| `a`, `b`, `c`    |
 
 More distributions can be easily implemented in `RNGFactory.py`. See [Scipy's documentation](https://docs.scipy.org/doc/scipy/reference/stats.html) for details regarding the distributions and their parameters.
-
-In our multi-dimensional model, we define transitions that can affect the values of dimensions tracked by "dimension_holder" places. These transitions can induce changes in dimensions either by a fixed value or by a rate that is multiplied by time.
-Each transition can be linked to one or more "dimension_holder" places, and the changes in these places are determined based on predefined values associated with the transitions. The types of changes that can occur are:
-
-* Fixed Value Changes: The dimension increases or decreases by a specified fixed amount whenever the transition is fired.
-* Rate-based Changes: The dimension changes at a specified rate, multiplied by the duration of time over which the transition occurs.
-```bash
-t2.add_dimension_change("energy", "rate", 4)
-t2.add_dimension_change("waste", "fixed",  20)
-```
 
 ### Guard Functions for Transitions
 
@@ -149,3 +137,22 @@ draw_spn(spn, show=False, file="sample_spn", rankdir="LR")
 The graph can be found under `output/graphs/`. 
 
 ## Usage & Attribution
+
+If you are using the tool for a scientific project please consider citing our [publication](https://www.researchgate.net/publication/375758652_PySPN_An_Extendable_Python_Library_for_Modeling_Simulation_of_Stochastic_Petri_Nets):
+
+    # EAI SIMUtools 2023 - 15th EAI International Conference on Simulation Tools and Techniques (preprint, accepted for presentation)
+    @misc{friederich_2023,
+        doi = {10.13140/RG.2.2.25334.16967},
+        url = {https://www.researchgate.net/publication/375758652_PySPN_An_Extendable_Python_Library_for_Modeling_Simulation_of_Stochastic_Petri_Nets},
+        year = 2023,
+        month = {Nov},
+        author = {Friederich, Jonas and Lazarova-Molnar, Sanja},
+        title = {{PySPN}: An Extendable Python Library for Modeling & Simulation of Stochastic Petri Nets},
+        conference = {EAI SIMUtools 2023 - 15th EAI International Conference on Simulation Tools and Techniques},
+        note = {preprint}
+    } 
+
+For questions/feedback feel free to contact me: jofr@mmmi.sdu.dk.
+
+
+ 
