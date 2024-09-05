@@ -174,19 +174,10 @@ spn.report_places()
 
 If you are using the tool for a scientific project please consider citing our [publication](https://www.researchgate.net/publication/375758652_PySPN_An_Extendable_Python_Library_for_Modeling_Simulation_of_Stochastic_Petri_Nets):
 
-    # EAI SIMUtools 2023 - 15th EAI International Conference on Simulation Tools and Techniques (preprint, accepted for presentation)
-    @misc{friederich_2023,
-        doi = {10.13140/RG.2.2.25334.16967},
-        url = {https://www.researchgate.net/publication/375758652_PySPN_An_Extendable_Python_Library_for_Modeling_Simulation_of_Stochastic_Petri_Nets},
-        year = 2023,
-        month = {Nov},
-        author = {Friederich, Jonas and Lazarova-Molnar, Sanja},
-        title = {{PySPN}: An Extendable Python Library for Modeling & Simulation of Stochastic Petri Nets},
-        conference = {EAI SIMUtools 2023 - 15th EAI International Conference on Simulation Tools and Techniques},
-        note = {preprint}
-    } 
+    # EAI SIMUtools 2024 - ...
+    @misc{} 
 
-For questions/feedback feel free to contact me: jofr@mmmi.sdu.dk.
+For questions/feedback feel free to contact me: atieh.khodadadi@kit.edu
 
 
  
