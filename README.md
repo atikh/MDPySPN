@@ -163,6 +163,13 @@ draw_spn(spn, show=False, file="sample_spn", rankdir="LR")
 ```
 The graph can be found under `output/graphs/`. 
 
+and 
+The output can be defined as a visualization in the form of an MDSPN diagram, and the same to show the final places and dimension values in terminal.
+```bash
+draw_spn(spn, show=True)
+spn.report_places()
+```
+
 ## Usage & Attribution
 
 If you are using the tool for a scientific project please consider citing our [publication](https://www.researchgate.net/publication/375758652_PySPN_An_Extendable_Python_Library_for_Modeling_Simulation_of_Stochastic_Petri_Nets):
