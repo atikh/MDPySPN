@@ -49,6 +49,7 @@ p3 = Place(label="PH1", is_dimension_holder=True, dimension_tracked='energy', in
 When a place has a dependency on time for consuming its dimension value and is linked to a transition, we use DoT=1. This means while a token is in this place, the time is counted. When the transition fires, the duration that the token spent in the place will be multiplied by the rate of the transition for that dimension. This is especially useful for scenarios like an "Idle" state in an energy-dimension model.
 ```bash
 pI1 = Place("Idle",1, DoT=1, dimension_tracked="energy")
+```
 
 ### Transitions
 
