@@ -63,10 +63,12 @@ An immediate transition with its required arguments and a sample weight is defin
 t2 = Transition(label="Transition 2", t_type="I")
 t2.set_weight(weight=0.8)
 ```
-```
+
 To provide more accurate results for the input and output values, we define specific input and output places within the model.
+```bash
 t1 = Transition("Transition 1","T", input_transition=True)
 tN = Transition("Transition N","T", output_transition=True)
+```
 
 For timed transitions, some of the supported distributions are:
 
