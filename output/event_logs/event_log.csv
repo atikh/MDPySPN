@@ -1,0 +1,130 @@
+Time_Stamp,ID,Event
+8.42,80,P1
+8.42,80,P1
+8.42,79,Idle
+8.42,81,Production Process
+8.42,82,PhEnegery1
+15.42,81,Production Process
+15.42,83,Production Done
+15.42,84,PhEnegery2
+15.42,85,PhWaste1
+15.42,86,Idle
+17.8,87,P1
+17.8,87,P1
+17.8,86,Idle
+17.8,88,Production Process
+17.8,89,PhEnegery1
+24.8,88,Production Process
+24.8,90,Production Done
+24.8,91,PhEnegery2
+24.8,92,PhWaste1
+24.8,93,Idle
+25.53,94,P1
+25.53,94,P1
+25.53,93,Idle
+25.53,95,Production Process
+25.53,96,PhEnegery1
+32.53,95,Production Process
+32.53,97,Production Done
+32.53,98,PhEnegery2
+32.53,99,PhWaste1
+32.53,100,Idle
+34.46,101,P1
+34.46,101,P1
+34.46,100,Idle
+34.46,102,Production Process
+34.46,103,PhEnegery1
+41.46,102,Production Process
+41.46,104,Production Done
+41.46,105,PhEnegery2
+41.46,106,PhWaste1
+41.46,107,Idle
+42.08,108,P1
+42.08,108,P1
+42.08,107,Idle
+42.08,109,Production Process
+42.08,110,PhEnegery1
+49.08,109,Production Process
+49.08,111,Production Done
+49.08,112,PhEnegery2
+49.08,113,PhWaste1
+49.08,114,Idle
+49.27,115,P1
+49.27,115,P1
+49.27,114,Idle
+49.27,116,Production Process
+49.27,117,PhEnegery1
+56.27,116,Production Process
+56.27,118,Production Done
+56.27,119,PhEnegery2
+56.27,120,PhWaste1
+56.27,121,Idle
+58.11,122,P1
+58.11,122,P1
+58.11,121,Idle
+58.11,123,Production Process
+58.11,124,PhEnegery1
+65.11,123,Production Process
+65.11,125,Production Done
+65.11,126,PhEnegery2
+65.11,127,PhWaste1
+65.11,128,Idle
+65.55,129,P1
+65.55,129,P1
+65.55,128,Idle
+65.55,130,Production Process
+65.55,131,PhEnegery1
+72.55,130,Production Process
+72.55,132,Production Done
+72.55,133,PhEnegery2
+72.55,134,PhWaste1
+72.55,135,Idle
+75.36,136,P1
+75.36,136,P1
+75.36,135,Idle
+75.36,137,Production Process
+75.36,138,PhEnegery1
+82.36,137,Production Process
+82.36,139,Production Done
+82.36,140,PhEnegery2
+82.36,141,PhWaste1
+82.36,142,Idle
+82.64,143,P1
+82.64,143,P1
+82.64,142,Idle
+82.64,144,Production Process
+82.64,145,PhEnegery1
+89.64,144,Production Process
+89.64,146,Production Done
+89.64,147,PhEnegery2
+89.64,148,PhWaste1
+89.64,149,Idle
+90.14,150,P1
+90.14,150,P1
+90.14,149,Idle
+90.14,151,Production Process
+90.14,152,PhEnegery1
+97.14,151,Production Process
+97.14,153,Production Done
+97.14,154,PhEnegery2
+97.14,155,PhWaste1
+97.14,156,Idle
+98.09,157,P1
+98.09,157,P1
+98.09,156,Idle
+98.09,158,Production Process
+98.09,159,PhEnegery1
+100,None,P1
+100,None,P1
+100,None,Idle
+100,None,Idle
+100,158,Production Process
+100,158,Production Process
+100,None,Production Done
+100,None,Production Done
+100,159,PhEnegery1
+100,159,PhEnegery1
+100,155,PhWaste1
+100,155,PhWaste1
+100,154,PhEnegery2
+100,154,PhEnegery2

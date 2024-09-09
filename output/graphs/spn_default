@@ -1,0 +1,39 @@
+digraph {
+	graph [rankdir=TB]
+	node [fillcolor=lightgrey shape=plaintext style=filled]
+	summary [label="Summary of Dimensions:
+energy: 2009.34
+waste: 220.00
+
+Input/Output Summary:
+New Task input: 12
+Task Completed output: 11
+"]
+	node [fillcolor="" shape=ellipse style=""]
+	P1 [label="" fixedsize=true height=0.6 shape=circle width=0.6 xlabel=""]
+	Idle [label="" fixedsize=true height=0.6 shape=circle width=0.6 xlabel=""]
+	"Production Process" [label=<&#9679;> fixedsize=true height=0.6 shape=circle width=0.6 xlabel=""]
+	"Production Done" [label="" fixedsize=true height=0.6 shape=circle width=0.6 xlabel=""]
+	PhEnegery1 [label=84.34 fixedsize=true fontsize=8 shape=doublecircle style="" width=0.6 xlabel=energy]
+	PhWaste1 [label=220.00 fixedsize=true fontsize=8 shape=doublecircle style="" width=0.6 xlabel=waste]
+	PhEnegery2 [label=1925.00 fixedsize=true fontsize=8 shape=doublecircle style="" width=0.6 xlabel=energy]
+	"New Task" [label="" fixedsize=true height=0.2 shape=rectangle width=0.6 xlabel="New Task
+"]
+	"New Task" -> P1 [label=""]
+	Preprocessing [label="" color=black fixedsize=true height=0.2 shape=rectangle style=filled width=0.6 xlabel=Preprocessing
+]
+	P1 -> Preprocessing [label=""]
+	Idle -> Preprocessing [label=""]
+	Preprocessing -> "Production Process" [label=""]
+	Preprocessing -> PhEnegery1 [label=""]
+	Processing [label="" fixedsize=true height=0.2 shape=rectangle width=0.6 xlabel=Processing
+]
+	"Production Process" -> Processing [label=""]
+	Processing -> "Production Done" [label=""]
+	Processing -> PhEnegery2 [label=""]
+	Processing -> PhWaste1 [label=""]
+	Processing -> Idle [label=""]
+	"Task Completed" [label="" color=black fixedsize=true height=0.2 shape=rectangle style=filled width=0.6 xlabel="Task Completed
+"]
+	"Production Done" -> "Task Completed" [label=""]
+}
