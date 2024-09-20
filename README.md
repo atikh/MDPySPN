@@ -2,7 +2,7 @@
     <img src="https://img.shields.io/badge/contributions-welcome!-green" alt="Contributions welcome!"/>
 </p>
 
-# MDSPN
+# MDPySPN
 
 An extended version of PySPN lightweight tool for modeling and simulation of Multi-Dimensional Stochastic Petri Nets (MDSPNs).
 
