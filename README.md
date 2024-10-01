@@ -29,7 +29,7 @@ where:
 * $P = \{P_1,P_2,..,P_m\}$ is the set of places, drawn as circles;
 * $T = \{T_1,T_2,..,T_n\}$ is the set of transitions along with their distribution functions or weights, drawn as bars;
 * $A = A^I \cup A^O \cup A^H$ is the set of arcs, where $A^O$ is the set of output arcs, $A^I$ is the set of input arcs and $A^H$ is the set of inhibitor arcs and each of the arcs has a multiplicity assigned to it;
-* $G = \{g_1,g_2,..,g_r\}$ is the set of guard functions which are associated with different transitions;
+* $G = \{g_1,g_2,..,g_r\}$ is the set of guard functions that are associated with different transitions;
 * and $m_0$ is the initial marking, defining the distribution of tokens in the places.
 
 Each transition is represented as $T_i = (type, F)$, where $type \in \{timed,immediate\}$ indicates the type of the transition, and $F$ is either a probability distribution function if the corresponding transition is timed, or a firing weight or probability if it is immediate. 
@@ -42,9 +42,9 @@ A place with its required arguments is defined like so:
 ```bash
 p1 = Place(label="Place 1", n_tokens=0)
 ```
-Additionally, In this code, we define special places known as "dimension_holder" places. These places are responsible for keeping track of the effects that certain transitions have on specific dimensions when they are fired. The dimension that each "dimension_holder" place monitors is specified by the "dimension_tracked" attribute.
+Additionally, In this code, we define special places known as "Tracking Places". These places are responsible for keeping track of the effects that certain transitions have on specific dimensions when they are fired. The dimension that each tracking place monitors is specified by the "dimension_tracked" attribute.
 ```bash
-p3 = Place(label="PH1", is_dimension_holder=True, dimension_tracked='energy', initial_value=0)
+p3 = Place(label="PH1", is_tracking=True, dimension_tracked='energy', initial_value=0)
 ```
 When a place has a dependency on time for consuming its dimension value and is linked to a transition, we use DoT=1. This means while a token is in this place, the time is counted. When the transition fires, the duration that the token spent in the place will be multiplied by the rate of the transition for that dimension. This is especially useful for scenarios like an "Idle" state in an energy-dimension model.
 ```bash
@@ -53,13 +53,13 @@ pI1 = Place("Idle",1, DoT=1, dimension_tracked="energy")
 
 ### Transitions
 
-A timed transition with its required arguments and a sample distribution function is defined like so:
+A timed transition with its required arguments and a sample distribution function is defined as:
 ```bash
 t1 = Transition(label="Transition 1", t_type="T")
 t1.set_distribution(distribution="expon", a=0.0, b=1.0/1.0)
 ```
 
-An immediate transition with its required arguments and a sample weight is defined like so:
+An immediate transition with its required arguments and a sample weight is defined as:
 ```bash
 t2 = Transition(label="Transition 2", t_type="I")
 t2.set_weight(weight=0.8)
@@ -146,14 +146,14 @@ Simulate a SPN like so:
 simulate(spn, max_time = 100, verbosity = 2, protocol = True)
 ```
 
-For the verbosity there are 3 levels of what is printed in the terminal:
+For the verbosity, there are 3 levels of what is printed in the terminal:
  
 * 0: No information;
 * 1: Only final simulation statistics;
 * 2: Initial markings, firing of transitions, and final statistics;  
 * 3: Initial markings, firing of transitions and the resulting marking and state, and final statistics.
 
-The simulation protocol capturing the markings throughtout the simulation can be found under `output/protocol/`.
+The simulation protocol capturing the markings throughout the simulation can be found under `output/protocol/`.
 
 ## Visualization
 
@@ -164,7 +164,7 @@ draw_spn(spn, show=False, file="sample_spn", rankdir="LR")
 The graph can be found under `output/graphs/`. 
 
 and 
-The output can be defined as a visualization in the form of an MDSPN diagram, and the same to show the final places and dimension values in terminal.
+The output can be defined as a visualization in the form of an MDSPN diagram, and the same to show the final places and dimension values in the terminal.
 ```bash
 draw_spn(spn, show=True)
 spn.report_places()
