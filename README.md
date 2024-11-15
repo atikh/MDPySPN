@@ -4,7 +4,7 @@
 
 # MDPySPN
 
-An extended version of PySPN lightweight tool for modeling and simulation of Multi-Dimensional Stochastic Petri Nets (MDSPNs).
+A lightweight tool for modeling and simulation of Multi-Dimensional Stochastic Petri Nets (MDSPN).
 
 ## Getting Started
 
