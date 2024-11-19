@@ -46,7 +46,7 @@ Additionally, In this code, we define special places known as "Tracking Places".
 ```bash
 p3 = Place(label="PH1", is_tracking=True, dimension_tracked='energy', initial_value=0)
 ```
-When a place has a dependency on time for consuming its dimension value and is linked to a transition, we use DoT=1. This means while a token is in this place, the time is counted. When the transition fires, the duration that the token spent in the place will be multiplied by the rate of the transition for that dimension. This is especially useful for scenarios like an "Idle" state in an energy-dimension model.
+To solve the conflict between time and other dimensions, when a place has a dependency on time dimension for consuming its dimension value and is linked to an immediate transition, we use DoT=1. This means while a token is in this place, the time is counted. When the transition fires, the duration that the token spent in the place will be multiplied by the rate of the transition for that dimension. This is especially useful for scenarios like an "Idle" state in an energy-dimension model.
 ```bash
 pI1 = Place("Idle",1, DoT=1, dimension_tracked="energy")
 ```
