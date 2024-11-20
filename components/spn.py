@@ -143,7 +143,7 @@ class Place:
 
 class Transition(object):
 
-    def __init__(self, label: str, t_type: str, Join=0, Fork=0, dimension_changes=None, capacity=1, input_transition=False, output_transition=False, **kwargs):
+    def __init__(self, label: str, t_type: str, Join=0, Fork=0, dimension_changes=None, capacity=100, input_transition=False, output_transition=False, **kwargs):
         self.label = label
         self.t_type = t_type
         self.capacity = capacity
