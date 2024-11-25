@@ -321,9 +321,9 @@ def fire_transition(transition: Transition):
             for place in transition.output_arcs:
                 if place.to_place.is_tracking and place.to_place.dimension_tracked == dimension:
                     if change_type == "fixed":
-                        place.to_place.value += value
+                        place.to_place.value += value*transition.capacity
                     elif change_type == "rate":
-                        calculated_change = value * transition.firing_delay
+                        calculated_change = value * transition.firing_delay*transition.capacity
                         place.to_place.value += calculated_change
                     if PROTOCOL:
                         write_to_protocol(place.to_place.label, SIMULATION_TIME, place.to_place.value)
