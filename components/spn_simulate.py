@@ -334,11 +334,15 @@ def fire_transition(transition: Transition):
             for entry in tracking_places:
                 if entry["place"] == iarc.from_place:
                     duration = SIMULATION_TIME - entry["entrance_time"]
-                    rate_change = duration * value
-                    for oarc in transition.output_arcs:
-                        if oarc.to_place.dimension_tracked == entry["dimension"]:
-                            oarc.to_place.value += rate_change
-                    tracking_places.remove(entry)  # Remove the place info from the tracking list
+                    # Correctly determine 'value' from dimension_changes
+                    for dim_change in transition.dimension_changes:
+                        if dim_change[0] == entry["dimension"]:  # Matching the dimension
+                            _, _, value = dim_change  # Unpack the tuple to get the value
+                            rate_change = duration * value
+                            for oarc in transition.output_arcs:
+                                if oarc.to_place.dimension_tracked == entry["dimension"]:
+                                    oarc.to_place.value += rate_change
+                            tracking_places.remove(entry)  # Remove the place info from the tracking list
 
     # Track again the entrance time and place details for DoT places
     for oarc in transition.output_arcs:
