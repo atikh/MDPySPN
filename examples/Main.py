@@ -20,7 +20,7 @@ spn = SPN()
 #########################
 ## Define Places and Transitions ##
 #########################
-p1 = Place("New Task",0)
+p1 = Place("New Tasks",0)
 pI1 = Place("Idle",1, DoT=1, dimension_tracked="energy")
 p2 = Place("Production Process",0)
 p3= Place("Production Done",0)
