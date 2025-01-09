@@ -20,13 +20,13 @@ spn = SPN()
 #########################
 ## Define Places and Transitions ##
 #########################
-p1 = Place("P1",0)
+p1 = Place("New Task",0)
 pI1 = Place("Idle",1, DoT=1, dimension_tracked="energy")
 p2 = Place("Production Process",0)
 p3= Place("Production Done",0)
-pE1 = Place(label="PhEnegery1", is_tracking=True, dimension_tracked='energy', initial_value=0)
-pW1 = Place(label="PhWaste1", is_tracking=True, dimension_tracked='waste', initial_value=0)
-pE2 = Place(label="PhEnegery2", is_tracking=True, dimension_tracked='energy', initial_value=0)
+pE1 = Place(label="Tracking Place Enegery1", is_tracking=True, dimension_tracked='energy', initial_value=0)
+pW1 = Place(label="Tracking Place Waste1", is_tracking=True, dimension_tracked='waste', initial_value=0)
+pE2 = Place(label="Tracking Place Enegery2", is_tracking=True, dimension_tracked='energy', initial_value=0)
 
 t1 = Transition("New Task","T", input_transition=True)
 t1.set_distribution("expon", a=7.0, b=1.0/1.0)
