@@ -20,6 +20,11 @@ python3 examples/Main.py  # 3. Run the code
 
 ## Modeling
 
+We define the dimensions in interest and return the same as the following example:
+```bash
+Total_Dimensions = ['time', 'energy', 'waste']
+```
+
 Formally, the class of SPNs that can be modeled using *PySPN* is defined as:
 
 $$SPN = (P, T, A, G, m_0)$$
@@ -65,10 +70,22 @@ t2 = Transition(label="Transition 2", t_type="I")
 t2.set_weight(weight=0.8)
 ```
 
-To provide more accurate results for the input and output values, we define specific input and output places within the model.
+To define which dimensions are affected by the transition we use "dimension_changes" which by default is None.
+```bash
+t3 = Transition("Processing", "T")
+t3.add_dimension_change("energy", "rate", 25)
+t3.add_dimension_change("waste", "fixed",  20)
+```
+
+We define specific input and output places within the model to track the system and also can be used as debugging items to check the transition behavior regarding the token destruction and generation.
 ```bash
 t1 = Transition("Transition 1","T", input_transition=True)
 tN = Transition("Transition N","T", output_transition=True)
+```
+
+Transitions can destroy multiple tokens and create new ones in the next palace each time they fire, to handle this number we added the item "Capacity" which is by default 0.
+```bash
+t1 = Transition("Transition 1","T", capacity=100)
 ```
 
 For timed transitions, some of the supported distributions are:
