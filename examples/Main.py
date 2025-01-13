@@ -6,7 +6,7 @@ sys.path.append('MDSPN') # please provide the path
 #########################
 ## Imports ##
 #########################
-from components.spn import *
+from MDPySPN.components.spn import *
 from components.spn_simulate import simulate
 from components.spn_visualization import *
 from components.spn import SPN
