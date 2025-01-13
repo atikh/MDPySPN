@@ -4,7 +4,7 @@ import importlib
 class SPN(object):
     def __init__(self):
         # Dynamically import Total_Dimensions from Main.py
-        main_module = importlib.import_module("Main")
+        main_module = importlib.import_module("examples.Main")
         self.dimensions = getattr(main_module, 'Total_Dimensions', None)
         self.places = []
         self.transitions = []
