@@ -1,5 +1,5 @@
 import sys
-sys.path.append('../MDPySPN')
+sys.path.append('../')
 
 
 #########################
