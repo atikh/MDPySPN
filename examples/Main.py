@@ -6,10 +6,10 @@ sys.path.append('MDSPN') # please provide the path
 #########################
 ## Imports ##
 #########################
-from MDPySPN.components.spn import *
-from components.spn_simulate import simulate
-from components.spn_visualization import *
-from components.spn import SPN
+from modules.spn import *
+from modules.spn_simulate import simulate
+from modules.spn_visualization import *
+from modules.spn import SPN
 
 ## Define Dimensions and return to all ##
 #########################
