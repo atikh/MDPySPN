@@ -15,7 +15,7 @@
 ```bash
 git clone https://github.com/atikh/MDPySPN.git  # 1. Clone repository
 pip install -r requirements.txt  # 2. Install requirements
-python3 examples/Main.py  # 3. Run the code
+python examples/Main.py  # 3. Run the code
 ```
 
 ## Modeling
