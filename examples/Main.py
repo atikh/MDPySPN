@@ -1,5 +1,6 @@
 import sys
-sys.path.append('../MDPySPN')
+##sys.path.append('../MDPySPN')
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../')
 
 
 #########################
