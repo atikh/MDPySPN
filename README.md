@@ -184,6 +184,11 @@ draw_spn(spn, show=True)
 spn.report_places()
 ```
 
+At the end of the simulation run, if the **show** option is enabled, a **PDF file** will be generated containing a detailed visualization of the final state of the simulation. This graph includes key performance indicators (**KPIs**) such as **input/output statistics** and the **final values of tracked dimensions**.
+```bash
+draw_spn(spn, show=True)
+```
+
 ## Usage & Attribution
 
 If you are using the tool for a scientific project please consider citing our [publication](https://www.researchgate.net/publication/375758652_PySPN_An_Extendable_Python_Library_for_Modeling_Simulation_of_Stochastic_Petri_Nets):
