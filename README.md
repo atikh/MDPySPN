@@ -47,10 +47,7 @@ A place with its required arguments is defined like so:
 ```bash
 p1 = Place(label="Place 1", n_tokens=0)
 ```
-Additionally, In this code, we define special places known as "Tracking Places". These places are responsible for keeping track of the effects that certain transitions have on specific dimensions when they are fired. The dimension that each tracking place monitors is specified by the "dimension_tracked" attribute.
-```bash
-p3 = Place(label="PH1", is_tracking=True, dimension_tracked='energy', initial_value=0)
-```
+
 To solve the conflict between time and other dimensions, when a place has a dependency on time dimension for consuming its dimension value and is linked to an immediate transition, we use DoT=1. This means while a token is in this place, the time is counted. When the transition fires, the duration that the token spent in the place will be multiplied by the rate of the transition for that dimension. This is especially useful for scenarios like an "Idle" state in an energy-dimension model.
 ```bash
 pI1 = Place("Idle",1, DoT=1, dimension_tracked="energy")
@@ -69,7 +66,7 @@ An immediate transition with its required arguments and a sample weight is defin
 t2 = Transition(label="Transition 2", t_type="I")
 t2.set_weight(weight=0.8)
 ```
-
+Additionally, in this code, we define special transitions as "Multidimensional Transitions". These transitions are divided and showcase the behavior of the system in each dimension in the order of the dimensions introduced at the beginning of the code. For instance, in the example code the new order transition, is contributing in the time dimension which is white in the first part of the transition, and non-contributing in energy and waste dimensions which are shown in their parts in black.
 To define which dimensions are affected by the transition we use "dimension_changes" which by default is None.
 ```bash
 t3 = Transition("Processing", "T")
