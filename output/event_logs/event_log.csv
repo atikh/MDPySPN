@@ -1,0 +1,247 @@
+Time_Stamp,ID,Event
+2.19,3,New Tasks
+2.19,3,New Tasks
+2.19,2,Idle
+2.19,4,Production Process
+4.19,4,Production Process
+4.19,5,Production Done
+4.19,6,Idle
+4.48,7,New Tasks
+4.48,7,New Tasks
+4.48,6,Idle
+4.48,8,Production Process
+6.48,8,Production Process
+6.48,9,Production Done
+6.48,10,Idle
+7.93,11,New Tasks
+7.93,11,New Tasks
+7.93,10,Idle
+7.93,12,Production Process
+9.93,12,Production Process
+9.93,13,Production Done
+9.93,14,Idle
+10.1,15,New Tasks
+10.1,15,New Tasks
+10.1,14,Idle
+10.1,16,Production Process
+12.1,16,Production Process
+12.1,17,Production Done
+12.1,18,Idle
+13.05,19,New Tasks
+13.05,19,New Tasks
+13.05,18,Idle
+13.05,20,Production Process
+15.05,20,Production Process
+15.05,21,Production Done
+15.05,22,Idle
+15.7,23,New Tasks
+15.7,23,New Tasks
+15.7,22,Idle
+15.7,24,Production Process
+17.7,24,Production Process
+17.7,25,Production Done
+17.7,26,Idle
+18.25,27,New Tasks
+18.25,27,New Tasks
+18.25,26,Idle
+18.25,28,Production Process
+20.25,28,Production Process
+20.25,29,Production Done
+20.25,30,Idle
+20.62,31,New Tasks
+20.62,31,New Tasks
+20.62,30,Idle
+20.62,32,Production Process
+22.62,32,Production Process
+22.62,33,Production Done
+22.62,34,Idle
+24.25,35,New Tasks
+24.25,35,New Tasks
+24.25,34,Idle
+24.25,36,Production Process
+26.25,36,Production Process
+26.25,37,Production Done
+26.25,38,Idle
+29.16,39,New Tasks
+29.16,39,New Tasks
+29.16,38,Idle
+29.16,40,Production Process
+31.16,40,Production Process
+31.16,41,Production Done
+31.16,42,Idle
+31.88,43,New Tasks
+31.88,43,New Tasks
+31.88,42,Idle
+31.88,44,Production Process
+33.88,44,Production Process
+33.88,45,Production Done
+33.88,46,Idle
+35.64,47,New Tasks
+35.64,47,New Tasks
+35.64,46,Idle
+35.64,48,Production Process
+37.64,48,Production Process
+37.64,49,Production Done
+37.64,50,Idle
+37.98,51,New Tasks
+37.98,51,New Tasks
+37.98,50,Idle
+37.98,52,Production Process
+39.98,52,Production Process
+39.98,53,Production Done
+39.98,54,Idle
+40.28,55,New Tasks
+40.28,55,New Tasks
+40.28,54,Idle
+40.28,56,Production Process
+42.28,56,Production Process
+42.28,57,Production Done
+42.28,58,Idle
+44.17,59,New Tasks
+44.17,59,New Tasks
+44.17,58,Idle
+44.17,60,Production Process
+46.17,60,Production Process
+46.17,61,Production Done
+46.17,62,Idle
+46.95,63,New Tasks
+46.95,63,New Tasks
+46.95,62,Idle
+46.95,64,Production Process
+48.95,64,Production Process
+48.95,65,Production Done
+48.95,66,Idle
+49.19,67,New Tasks
+49.19,67,New Tasks
+49.19,66,Idle
+49.19,68,Production Process
+51.19,68,Production Process
+51.19,69,Production Done
+51.19,70,Idle
+51.68,71,New Tasks
+51.68,71,New Tasks
+51.68,70,Idle
+51.68,72,Production Process
+53.68,72,Production Process
+53.68,73,Production Done
+53.68,74,Idle
+54.35,75,New Tasks
+54.35,75,New Tasks
+54.35,74,Idle
+54.35,76,Production Process
+56.35,76,Production Process
+56.35,77,Production Done
+56.35,78,Idle
+57.41,79,New Tasks
+57.41,79,New Tasks
+57.41,78,Idle
+57.41,80,Production Process
+59.41,80,Production Process
+59.41,81,Production Done
+59.41,82,Idle
+60.99,83,New Tasks
+60.99,83,New Tasks
+60.99,82,Idle
+60.99,84,Production Process
+62.99,84,Production Process
+62.99,85,Production Done
+62.99,86,Idle
+65.31,87,New Tasks
+65.31,87,New Tasks
+65.31,86,Idle
+65.31,88,Production Process
+67.31,88,Production Process
+67.31,89,Production Done
+67.31,90,Idle
+68.28,91,New Tasks
+68.28,91,New Tasks
+68.28,90,Idle
+68.28,92,Production Process
+70.28,92,Production Process
+70.28,93,Production Done
+70.28,94,Idle
+70.54,95,New Tasks
+70.54,95,New Tasks
+70.54,94,Idle
+70.54,96,Production Process
+72.54,96,Production Process
+72.54,97,Production Done
+72.54,98,Idle
+74.59,99,New Tasks
+74.59,99,New Tasks
+74.59,98,Idle
+74.59,100,Production Process
+76.59,100,Production Process
+76.59,101,Production Done
+76.59,102,Idle
+77.31,103,New Tasks
+77.31,103,New Tasks
+77.31,102,Idle
+77.31,104,Production Process
+79.31,104,Production Process
+79.31,105,Production Done
+79.31,106,Idle
+79.4,107,New Tasks
+79.4,107,New Tasks
+79.4,106,Idle
+79.4,108,Production Process
+81.4,108,Production Process
+81.4,109,Production Done
+81.4,110,Idle
+81.75,111,New Tasks
+81.75,111,New Tasks
+81.75,110,Idle
+81.75,112,Production Process
+83.75,112,Production Process
+83.75,113,Production Done
+83.75,114,Idle
+85.07,115,New Tasks
+85.07,115,New Tasks
+85.07,114,Idle
+85.07,116,Production Process
+87.07,116,Production Process
+87.07,117,Production Done
+87.07,118,Idle
+88.09,119,New Tasks
+88.09,119,New Tasks
+88.09,118,Idle
+88.09,120,Production Process
+90.09,120,Production Process
+90.09,121,Production Done
+90.09,122,Idle
+91.33,123,New Tasks
+91.33,123,New Tasks
+91.33,122,Idle
+91.33,124,Production Process
+93.33,124,Production Process
+93.33,125,Production Done
+93.33,126,Idle
+93.39,127,New Tasks
+93.39,127,New Tasks
+93.39,126,Idle
+93.39,128,Production Process
+95.39,128,Production Process
+95.39,129,Production Done
+95.39,130,Idle
+95.68,131,New Tasks
+95.68,131,New Tasks
+95.68,130,Idle
+95.68,132,Production Process
+97.68,132,Production Process
+97.68,133,Production Done
+97.68,134,Idle
+97.88,135,New Tasks
+97.88,135,New Tasks
+97.88,134,Idle
+97.88,136,Production Process
+99.88,136,Production Process
+99.88,137,Production Done
+99.88,138,Idle
+100,None,New Tasks
+100,None,New Tasks
+100,138,Idle
+100,138,Idle
+100,None,Production Process
+100,None,Production Process
+100,None,Production Done
+100,None,Production Done
