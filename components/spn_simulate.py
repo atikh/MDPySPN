@@ -227,33 +227,50 @@ def fire_transition(transition: Transition):
 ######################
 ### WRITE TO EVENT LOG
 ######################
-    if transition.input_arcs:
+    # Collect tokens from all input arcs if it's a Join transition
+    if transition.Join == 1:
+        collected_tokens = []
         for iarc in transition.input_arcs:
             if iarc.from_place.tokens:
-                token_id = iarc.from_place.tokens.pop(0)  # Take a token from an input place
+                collected_tokens.append(iarc.from_place.tokens.pop(0))
 
-                if transition.output_arcs:
-                    # If there are output arcs, move the token to each output place
-                    for oarc in transition.output_arcs:
-                        oarc.to_place.tokens.append(token_id)
-                        write_to_event_log(SIMULATION_TIME, token_id, transition.label)
-                else:
-                    write_to_event_log(SIMULATION_TIME, token_id, transition.label)
-    else:
-        # For transitions without input arcs, consider if they should generate a new token or just fire
+        # Use a new token for the output if it's a join transition
+        new_token = Token()
         if transition.output_arcs:
-            new_token = Token()  # Assuming Token creation is required
             for oarc in transition.output_arcs:
                 oarc.to_place.tokens.append(new_token)
-                write_to_event_log(SIMULATION_TIME, new_token.id, transition.label)
-        else:
-            # Log the firing of a transition without input or output arcs (state change or notification)
-            write_to_event_log(SIMULATION_TIME, None,
-                               transition.label)  # Use None or a special ID for token_id if needed
+            # Log only once for the join transition
+            write_to_event_log(SIMULATION_TIME, new_token.id, transition.label)
+
+    else:
+        # Handle transitions with input arcs (non-join)
+        for iarc in transition.input_arcs:
+            if iarc.from_place.tokens:
+                token_id = iarc.from_place.tokens.pop(0)
+                # For fork transitions, create a new token for each output arc
+                if transition.Fork == 1:
+                    for oarc in transition.output_arcs:
+                        new_token = Token()
+                        oarc.to_place.tokens.append(new_token)
+                        write_to_event_log(SIMULATION_TIME, new_token.id, transition.label)
+                else:
+                    # If not a fork, pass the same token to all outputs
+                    for oarc in transition.output_arcs:
+                        oarc.to_place.tokens.append(token_id)
+                    # Log only once for the non-fork transition
+                    write_to_event_log(SIMULATION_TIME, token_id, transition.label)
+
+    # Handle transitions without input arcs, possibly creating a new token
+    if not transition.input_arcs:
+        if transition.output_arcs:
+            new_token = Token()
+            for oarc in transition.output_arcs:
+                oarc.to_place.tokens.append(new_token)
+            # Log the transition that creates a new token without input arcs
+            write_to_event_log(SIMULATION_TIME, new_token.id, transition.label)
 
 
-
-
+##############################
    # Track the entrance time and place details for DoT places
     for oarc in transition.output_arcs:
         if oarc.to_place.DoT == 1:
@@ -311,8 +328,6 @@ def fire_transition(transition: Transition):
                 if transition.counter == len(transition.input_arcs):  # Log on last iteration
                     transition.counter = 0
                     for oarc in transition.output_arcs:
-                        new_token = Token()
-                        oarc.to_place.tokens.append(new_token.id)
                         if PROTOCOL:
                             write_to_protocol(iarc.from_place.label, SIMULATION_TIME, len(iarc.from_place.tokens))
             else:
@@ -332,7 +347,6 @@ def fire_transition(transition: Transition):
             #write_to_event_log(SIMULATION_TIME, token_id, transition.label)  # Log every token movement
             for index in range(oarc.multiplicity):
                 write_to_protocol(oarc.to_place.label, SIMULATION_TIME, len(oarc.to_place.tokens))
-                new_token = Token()
                 oarc.to_place.tokens.append(new_token.id)
                 if index == oarc.multiplicity - 1 and PROTOCOL:
                     write_to_protocol(oarc.to_place.label, SIMULATION_TIME, len(oarc.to_place.tokens))  # Log after moving
@@ -539,9 +553,9 @@ def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, p
             for dimension, value in transition.dimension_table.items():
                 dimension_totals[dimension] = dimension_totals.get(dimension, 0) + value
 
-    # ✅ Print Final Summary of All Dimensions
+    #  Print Final Summary of All Dimensions
     print("\nSummary of Dimensions:")
     for dimension, total in dimension_totals.items():
-        if dimension is not None:  # ✅ Ensure None values are excluded
+        if dimension is not None:  # Ensure None values are excluded
             print(f"{dimension}: {total:.2f}")
     print("Simulation ends")
