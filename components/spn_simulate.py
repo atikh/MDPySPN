@@ -324,8 +324,6 @@ def fire_transition(transition: Transition):
                     transition.dimension_table[dimension] = value* transition.capacity
                 elif change_type == "rate":
                     transition.dimension_table[dimension] = value * transition.firing_delay * transition.capacity
-            if PROTOCOL:
-                write_to_protocol(iarc.from_place.label, SIMULATION_TIME, transition.dimension_table[dimension])
 
     # Check if input places are DoT and calculate the duration
     for iarc in transition.input_arcs:
@@ -346,9 +344,6 @@ def fire_transition(transition: Transition):
                         else:
                             transition.dimension_table[dimension] = duration * value
                         print("DU", transition.dimension_table[dimension] , duration, value)
-                        # Log the updated value for the input place
-                        if PROTOCOL:
-                            write_to_protocol(input_place.label, SIMULATION_TIME, transition.dimension_table[dimension])
 
                 # Remove the processed tracking entry to avoid duplication
                 tracking_places.remove(tracking_entry)
@@ -515,9 +510,9 @@ def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, p
             for dimension, value in transition.dimension_table.items():
                 dimension_totals[dimension] = dimension_totals.get(dimension, 0) + value
 
-    # ✅ Print Final Summary of All Dimensions
+    # Print Final Summary of All Dimensions
     print("\nSummary of Dimensions:")
     for dimension, total in dimension_totals.items():
-        if dimension is not None:  # ✅ Ensure None values are excluded
+        if dimension is not None:  # Ensure None values are excluded
             print(f"{dimension}: {total:.2f}")
     print("Simulation ends")
