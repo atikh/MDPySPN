@@ -1,0 +1,346 @@
+Place,Time,Marking
+New Tasks,2.28,1
+New Tasks,2.28,2
+New Tasks,2.28,1
+Production Process,2.28,1
+Idle,2.28,0
+Production Process,2.28,1
+Idle,2.28,0
+Production Process,4.28,0
+Production Done,4.28,1
+Idle,4.28,1
+Production Done,4.28,0
+New Tasks,4.45,1
+New Tasks,4.45,2
+New Tasks,4.45,1
+Production Process,4.45,1
+Idle,4.45,0
+Production Process,4.45,1
+Idle,4.45,0
+Production Process,6.45,0
+Production Done,6.45,1
+Idle,6.45,1
+Production Done,6.45,0
+New Tasks,6.96,1
+New Tasks,6.96,2
+New Tasks,6.96,1
+Production Process,6.96,1
+Idle,6.96,0
+Production Process,6.96,1
+Idle,6.96,0
+Production Process,8.96,0
+Production Done,8.96,1
+Idle,8.96,1
+Production Done,8.96,0
+New Tasks,13.1,1
+New Tasks,13.1,2
+New Tasks,13.1,1
+Production Process,13.1,1
+Idle,13.1,0
+Production Process,13.1,1
+Idle,13.1,0
+Production Process,15.1,0
+Production Done,15.1,1
+Idle,15.1,1
+Production Done,15.1,0
+New Tasks,15.78,1
+New Tasks,15.78,2
+New Tasks,15.78,1
+Production Process,15.78,1
+Idle,15.78,0
+Production Process,15.78,1
+Idle,15.78,0
+Production Process,17.78,0
+Production Done,17.78,1
+Idle,17.78,1
+Production Done,17.78,0
+New Tasks,21.64,1
+New Tasks,21.64,2
+New Tasks,21.64,1
+Production Process,21.64,1
+Idle,21.64,0
+Production Process,21.64,1
+Idle,21.64,0
+Production Process,23.64,0
+Production Done,23.64,1
+Idle,23.64,1
+Production Done,23.64,0
+New Tasks,23.93,1
+New Tasks,23.93,2
+New Tasks,23.93,1
+Production Process,23.93,1
+Idle,23.93,0
+Production Process,23.93,1
+Idle,23.93,0
+Production Process,25.93,0
+Production Done,25.93,1
+Idle,25.93,1
+Production Done,25.93,0
+New Tasks,27.08,1
+New Tasks,27.08,2
+New Tasks,27.08,1
+Production Process,27.08,1
+Idle,27.08,0
+Production Process,27.08,1
+Idle,27.08,0
+Production Process,29.08,0
+Production Done,29.08,1
+Idle,29.08,1
+Production Done,29.08,0
+New Tasks,29.48,1
+New Tasks,29.48,2
+New Tasks,29.48,1
+Production Process,29.48,1
+Idle,29.48,0
+Production Process,29.48,1
+Idle,29.48,0
+Production Process,31.48,0
+Production Done,31.48,1
+Idle,31.48,1
+Production Done,31.48,0
+New Tasks,32.08,1
+New Tasks,32.08,2
+New Tasks,32.08,1
+Production Process,32.08,1
+Idle,32.08,0
+Production Process,32.08,1
+Idle,32.08,0
+Production Process,34.08,0
+Production Done,34.08,1
+Idle,34.08,1
+Production Done,34.08,0
+New Tasks,34.37,1
+New Tasks,34.37,2
+New Tasks,34.37,1
+Production Process,34.37,1
+Idle,34.37,0
+Production Process,34.37,1
+Idle,34.37,0
+Production Process,36.37,0
+Production Done,36.37,1
+Idle,36.37,1
+Production Done,36.37,0
+New Tasks,36.4,1
+New Tasks,36.4,2
+New Tasks,36.4,1
+Production Process,36.4,1
+Idle,36.4,0
+Production Process,36.4,1
+Idle,36.4,0
+Production Process,38.4,0
+Production Done,38.4,1
+Idle,38.4,1
+Production Done,38.4,0
+New Tasks,38.57,1
+New Tasks,38.57,2
+New Tasks,38.57,1
+Production Process,38.57,1
+Idle,38.57,0
+Production Process,38.57,1
+Idle,38.57,0
+Production Process,40.57,0
+Production Done,40.57,1
+Idle,40.57,1
+Production Done,40.57,0
+New Tasks,42.01,1
+New Tasks,42.01,2
+New Tasks,42.01,1
+Production Process,42.01,1
+Idle,42.01,0
+Production Process,42.01,1
+Idle,42.01,0
+Production Process,44.01,0
+Production Done,44.01,1
+Idle,44.01,1
+Production Done,44.01,0
+New Tasks,44.48,1
+New Tasks,44.48,2
+New Tasks,44.48,1
+Production Process,44.48,1
+Idle,44.48,0
+Production Process,44.48,1
+Idle,44.48,0
+Production Process,46.48,0
+Production Done,46.48,1
+Idle,46.48,1
+Production Done,46.48,0
+New Tasks,47.99,1
+New Tasks,47.99,2
+New Tasks,47.99,1
+Production Process,47.99,1
+Idle,47.99,0
+Production Process,47.99,1
+Idle,47.99,0
+Production Process,49.99,0
+Production Done,49.99,1
+Idle,49.99,1
+Production Done,49.99,0
+New Tasks,51.94,1
+New Tasks,51.94,2
+New Tasks,51.94,1
+Production Process,51.94,1
+Idle,51.94,0
+Production Process,51.94,1
+Idle,51.94,0
+Production Process,53.94,0
+Production Done,53.94,1
+Idle,53.94,1
+Production Done,53.94,0
+New Tasks,55.21,1
+New Tasks,55.21,2
+New Tasks,55.21,1
+Production Process,55.21,1
+Idle,55.21,0
+Production Process,55.21,1
+Idle,55.21,0
+Production Process,57.21,0
+Production Done,57.21,1
+Idle,57.21,1
+Production Done,57.21,0
+New Tasks,58.17,1
+New Tasks,58.17,2
+New Tasks,58.17,1
+Production Process,58.17,1
+Idle,58.17,0
+Production Process,58.17,1
+Idle,58.17,0
+Production Process,60.17,0
+Production Done,60.17,1
+Idle,60.17,1
+Production Done,60.17,0
+New Tasks,60.35,1
+New Tasks,60.35,2
+New Tasks,60.35,1
+Production Process,60.35,1
+Idle,60.35,0
+Production Process,60.35,1
+Idle,60.35,0
+Production Process,62.35,0
+Production Done,62.35,1
+Idle,62.35,1
+Production Done,62.35,0
+New Tasks,62.73,1
+New Tasks,62.73,2
+New Tasks,62.73,1
+Production Process,62.73,1
+Idle,62.73,0
+Production Process,62.73,1
+Idle,62.73,0
+Production Process,64.73,0
+Production Done,64.73,1
+Idle,64.73,1
+Production Done,64.73,0
+New Tasks,65.07,1
+New Tasks,65.07,2
+New Tasks,65.07,1
+Production Process,65.07,1
+Idle,65.07,0
+Production Process,65.07,1
+Idle,65.07,0
+Production Process,67.07,0
+Production Done,67.07,1
+Idle,67.07,1
+Production Done,67.07,0
+New Tasks,68.76,1
+New Tasks,68.76,2
+New Tasks,68.76,1
+Production Process,68.76,1
+Idle,68.76,0
+Production Process,68.76,1
+Idle,68.76,0
+Production Process,70.76,0
+Production Done,70.76,1
+Idle,70.76,1
+Production Done,70.76,0
+New Tasks,70.98,1
+New Tasks,70.98,2
+New Tasks,70.98,1
+Production Process,70.98,1
+Idle,70.98,0
+Production Process,70.98,1
+Idle,70.98,0
+Production Process,72.98,0
+Production Done,72.98,1
+Idle,72.98,1
+Production Done,72.98,0
+New Tasks,76.11,1
+New Tasks,76.11,2
+New Tasks,76.11,1
+Production Process,76.11,1
+Idle,76.11,0
+Production Process,76.11,1
+Idle,76.11,0
+Production Process,78.11,0
+Production Done,78.11,1
+Idle,78.11,1
+Production Done,78.11,0
+New Tasks,79.01,1
+New Tasks,79.01,2
+New Tasks,79.01,1
+Production Process,79.01,1
+Idle,79.01,0
+Production Process,79.01,1
+Idle,79.01,0
+Production Process,81.01,0
+Production Done,81.01,1
+Idle,81.01,1
+Production Done,81.01,0
+New Tasks,84.29,1
+New Tasks,84.29,2
+New Tasks,84.29,1
+Production Process,84.29,1
+Idle,84.29,0
+Production Process,84.29,1
+Idle,84.29,0
+Production Process,86.29,0
+Production Done,86.29,1
+Idle,86.29,1
+Production Done,86.29,0
+New Tasks,87.01,1
+New Tasks,87.01,2
+New Tasks,87.01,1
+Production Process,87.01,1
+Idle,87.01,0
+Production Process,87.01,1
+Idle,87.01,0
+Production Process,89.01,0
+Production Done,89.01,1
+Idle,89.01,1
+Production Done,89.01,0
+New Tasks,93.79,1
+New Tasks,93.79,2
+New Tasks,93.79,1
+Production Process,93.79,1
+Idle,93.79,0
+Production Process,93.79,1
+Idle,93.79,0
+Production Process,95.79,0
+Production Done,95.79,1
+Idle,95.79,1
+Production Done,95.79,0
+New Tasks,95.88,1
+New Tasks,95.88,2
+New Tasks,95.88,1
+Production Process,95.88,1
+Idle,95.88,0
+Production Process,95.88,1
+Idle,95.88,0
+Production Process,97.88,0
+Production Done,97.88,1
+Idle,97.88,1
+Production Done,97.88,0
+New Tasks,98.82,1
+New Tasks,98.82,2
+New Tasks,98.82,1
+Production Process,98.82,1
+Idle,98.82,0
+Production Process,98.82,1
+Idle,98.82,0
+New Tasks,100,0
+New Tasks,100,0
+Idle,100,0
+Idle,100,0
+Production Process,100,1
+Production Process,100,1
+Production Done,100,0
+Production Done,100,0
