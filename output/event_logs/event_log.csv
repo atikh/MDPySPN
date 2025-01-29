@@ -1,0 +1,169 @@
+Time_Stamp,ID,Event
+2.02,3,New Task
+2.02,3,Preprocessing
+2.02,2,Preprocessing
+4.02,3,Processing
+4.02,3,Processing
+4.02,3,Task Completed
+4.73,5,New Task
+4.73,5,Preprocessing
+4.73,3,Preprocessing
+6.73,5,Processing
+6.73,5,Processing
+6.73,5,Task Completed
+9.19,7,New Task
+9.19,7,Preprocessing
+9.19,5,Preprocessing
+11.19,7,Processing
+11.19,7,Processing
+11.19,7,Task Completed
+18.19,9,New Task
+18.19,9,Preprocessing
+18.19,7,Preprocessing
+20.19,9,Processing
+20.19,9,Processing
+20.19,9,Task Completed
+25.15,11,New Task
+25.15,11,Preprocessing
+25.15,9,Preprocessing
+27.15,11,Processing
+27.15,11,Processing
+27.15,11,Task Completed
+30.54,13,New Task
+30.54,13,Preprocessing
+30.54,11,Preprocessing
+32.54,13,Processing
+32.54,13,Processing
+32.54,13,Task Completed
+33.8,15,New Task
+33.8,15,Preprocessing
+33.8,13,Preprocessing
+35.8,15,Processing
+35.8,15,Processing
+35.8,15,Task Completed
+35.97,17,New Task
+35.97,17,Preprocessing
+35.97,15,Preprocessing
+37.97,17,Processing
+37.97,17,Processing
+37.97,17,Task Completed
+38.42,19,New Task
+38.42,19,Preprocessing
+38.42,17,Preprocessing
+40.42,19,Processing
+40.42,19,Processing
+40.42,19,Task Completed
+41.34,21,New Task
+41.34,21,Preprocessing
+41.34,19,Preprocessing
+43.34,21,Processing
+43.34,21,Processing
+43.34,21,Task Completed
+44.77,23,New Task
+44.77,23,Preprocessing
+44.77,21,Preprocessing
+46.77,23,Processing
+46.77,23,Processing
+46.77,23,Task Completed
+47.23,25,New Task
+47.23,25,Preprocessing
+47.23,23,Preprocessing
+49.23,25,Processing
+49.23,25,Processing
+49.23,25,Task Completed
+53.48,27,New Task
+53.48,27,Preprocessing
+53.48,25,Preprocessing
+55.48,27,Processing
+55.48,27,Processing
+55.48,27,Task Completed
+56.44,29,New Task
+56.44,29,Preprocessing
+56.44,27,Preprocessing
+58.44,29,Processing
+58.44,29,Processing
+58.44,29,Task Completed
+58.85,31,New Task
+58.85,31,Preprocessing
+58.85,29,Preprocessing
+60.85,31,Processing
+60.85,31,Processing
+60.85,31,Task Completed
+61.23,33,New Task
+61.23,33,Preprocessing
+61.23,31,Preprocessing
+63.23,33,Processing
+63.23,33,Processing
+63.23,33,Task Completed
+64.6,35,New Task
+64.6,35,Preprocessing
+64.6,33,Preprocessing
+66.6,35,Processing
+66.6,35,Processing
+66.6,35,Task Completed
+67.85,37,New Task
+67.85,37,Preprocessing
+67.85,35,Preprocessing
+69.85,37,Processing
+69.85,37,Processing
+69.85,37,Task Completed
+69.89,39,New Task
+69.89,39,Preprocessing
+69.89,37,Preprocessing
+71.89,39,Processing
+71.89,39,Processing
+71.89,39,Task Completed
+72.76,41,New Task
+72.76,41,Preprocessing
+72.76,39,Preprocessing
+74.76,41,Processing
+74.76,41,Processing
+74.76,41,Task Completed
+74.85,43,New Task
+74.85,43,Preprocessing
+74.85,41,Preprocessing
+76.85,43,Processing
+76.85,43,Processing
+76.85,43,Task Completed
+77.42,45,New Task
+77.42,45,Preprocessing
+77.42,43,Preprocessing
+79.42,45,Processing
+79.42,45,Processing
+79.42,45,Task Completed
+82.15,47,New Task
+82.15,47,Preprocessing
+82.15,45,Preprocessing
+84.15,47,Processing
+84.15,47,Processing
+84.15,47,Task Completed
+84.74,49,New Task
+84.74,49,Preprocessing
+84.74,47,Preprocessing
+86.74,49,Processing
+86.74,49,Processing
+86.74,49,Task Completed
+87.47,51,New Task
+87.47,51,Preprocessing
+87.47,49,Preprocessing
+89.47,51,Processing
+89.47,51,Processing
+89.47,51,Task Completed
+89.69,53,New Task
+89.69,53,Preprocessing
+89.69,51,Preprocessing
+91.69,53,Processing
+91.69,53,Processing
+91.69,53,Task Completed
+94.88,55,New Task
+94.88,55,Preprocessing
+94.88,53,Preprocessing
+96.88,55,Processing
+96.88,55,Processing
+96.88,55,Task Completed
+97.86,57,New Task
+97.86,57,Preprocessing
+97.86,55,Preprocessing
+99.86,57,Processing
+99.86,57,Processing
+99.86,57,Task Completed
