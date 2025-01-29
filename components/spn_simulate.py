@@ -224,6 +224,35 @@ def update_enabled_flag(spn: SPN):
 
 def fire_transition(transition: Transition):
     """Fires a transition, moves tokens, and updates dimension tables."""
+######################
+### WRITE TO EVENT LOG
+######################
+    if transition.input_arcs:
+        for iarc in transition.input_arcs:
+            if iarc.from_place.tokens:
+                token_id = iarc.from_place.tokens.pop(0)  # Take a token from an input place
+
+                if transition.output_arcs:
+                    # If there are output arcs, move the token to each output place
+                    for oarc in transition.output_arcs:
+                        oarc.to_place.tokens.append(token_id)
+                        write_to_event_log(SIMULATION_TIME, token_id, transition.label)
+                else:
+                    write_to_event_log(SIMULATION_TIME, token_id, transition.label)
+    else:
+        # For transitions without input arcs, consider if they should generate a new token or just fire
+        if transition.output_arcs:
+            new_token = Token()  # Assuming Token creation is required
+            for oarc in transition.output_arcs:
+                oarc.to_place.tokens.append(new_token)
+                write_to_event_log(SIMULATION_TIME, new_token.id, transition.label)
+        else:
+            # Log the firing of a transition without input or output arcs (state change or notification)
+            write_to_event_log(SIMULATION_TIME, None,
+                               transition.label)  # Use None or a special ID for token_id if needed
+
+
+
 
    # Track the entrance time and place details for DoT places
     for oarc in transition.output_arcs:
@@ -256,12 +285,10 @@ def fire_transition(transition: Transition):
                 if iarc.from_place.tokens:
                     token_id = iarc.from_place.tokens.pop(0)
                     tokens_moved += 1
-                    write_to_event_log(SIMULATION_TIME, token_id, iarc.from_place.label)  # Log every token movement
+                    #write_to_event_log(SIMULATION_TIME, token_id, transition.label)  # Log every token movement
         if transition.counter <= len(transition.output_arcs):
             for oarc in transition.output_arcs:
                 for _ in range(tokens_to_move):
-                    new_token = Token()
-                    oarc.to_place.tokens.append(new_token.id)
                     if index == tokens_to_move - 1 and PROTOCOL:
                         write_to_protocol(iarc.from_place.label, SIMULATION_TIME, len(iarc.from_place.tokens))
                         write_to_protocol(oarc.to_place.label, SIMULATION_TIME, len(oarc.to_place.tokens))
@@ -279,6 +306,7 @@ def fire_transition(transition: Transition):
                     if iarc.from_place.tokens:
                         token_id = iarc.from_place.tokens.pop(0)
                         tokens_moved += 1
+                        #write_to_event_log(SIMULATION_TIME, token_id, transition.label)
                 transition.counter += 1
                 if transition.counter == len(transition.input_arcs):  # Log on last iteration
                     transition.counter = 0
@@ -292,6 +320,7 @@ def fire_transition(transition: Transition):
                     if iarc.from_place.tokens:
                         token_id = iarc.from_place.tokens.pop(0)
                         tokens_moved += 1
+                        #write_to_event_log(SIMULATION_TIME, token_id, transition.label)
                         for oarc in transition.output_arcs:
                             oarc.to_place.tokens.append(token_id)
                             if index == iarc.multiplicity - 1 and PROTOCOL:
@@ -300,7 +329,7 @@ def fire_transition(transition: Transition):
 
     if not transition.input_arcs:
         for oarc in transition.output_arcs:
-            tokens_to_move = min(len(oarc.to_place.tokens), max_tokens_to_transfer)
+            #write_to_event_log(SIMULATION_TIME, token_id, transition.label)  # Log every token movement
             for index in range(oarc.multiplicity):
                 write_to_protocol(oarc.to_place.label, SIMULATION_TIME, len(oarc.to_place.tokens))
                 new_token = Token()
@@ -510,9 +539,9 @@ def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, p
             for dimension, value in transition.dimension_table.items():
                 dimension_totals[dimension] = dimension_totals.get(dimension, 0) + value
 
-    # Print Final Summary of All Dimensions
+    # ✅ Print Final Summary of All Dimensions
     print("\nSummary of Dimensions:")
     for dimension, total in dimension_totals.items():
-        if dimension is not None:  # Ensure None values are excluded
+        if dimension is not None:  # ✅ Ensure None values are excluded
             print(f"{dimension}: {total:.2f}")
     print("Simulation ends")
