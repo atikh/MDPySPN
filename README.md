@@ -181,7 +181,6 @@ and
 The output can be defined as a visualization in the form of an MDSPN diagram, and the same to show the final places and dimension values in the terminal.
 ```bash
 draw_spn(spn, show=True)
-spn.report_places()
 ```
 Sample multidimensional SPN graph:
 ![image](https://github.com/user-attachments/assets/94958131-8486-4354-ab12-8302bdcd787e)
