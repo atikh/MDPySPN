@@ -171,7 +171,7 @@ The simulation protocol capturing the markings throughout the simulation can be 
 
 ## Visualization
 
-Visualize a SPN like so:
+Visualize a Multidimensional SPN like so:
 ```bash
 draw_spn(spn, show=False, file="sample_spn", rankdir="LR")
 ```
@@ -183,11 +183,10 @@ The output can be defined as a visualization in the form of an MDSPN diagram, an
 draw_spn(spn, show=True)
 spn.report_places()
 ```
+Sample multidimensional SPN graph:
+![image](https://github.com/user-attachments/assets/94958131-8486-4354-ab12-8302bdcd787e)
 
-At the end of the simulation run, if the **show** option is enabled, a **PDF file** will be generated containing a detailed visualization of the final state of the simulation. This graph includes key performance indicators (**KPIs**) such as **input/output statistics** and the **final values of tracked dimensions**.
-```bash
-draw_spn(spn, show=True)
-```
+At the end of the simulation run, if the **show** option is enabled, a **PDF file** will be generated containing a detailed visualization of the final state of the simulation. This graph includes key performance indicators (**KPIs**) such as **input/output statistics** and the **final A
 
 ## Usage & Attribution
 
