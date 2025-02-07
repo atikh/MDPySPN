@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     Mt1 = Transition("New Task","T", input_transition=True)
     Mt1.set_distribution("expon", a=2, b=1.0/1.0)
-    Mt2 = Transition("Preprocessing (begin)","I", Fork=1)
+    Mt2 = Transition("Preprocessing (begin)","I", Join=1)
     Mt2.add_dimension_change("energy", "rate", 25)
     Mt3 = Transition("Processing (begin)", "T", Fork=1)
     Mt3.set_distribution("det", a=2)
