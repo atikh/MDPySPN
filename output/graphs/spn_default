@@ -1,0 +1,37 @@
+digraph {
+	graph [rankdir=TB]
+	node [fillcolor=lightgrey shape=plaintext style=filled]
+	summary [label="Summary of Dimensions:
+energy: 4039.19
+waste: 46.50
+
+Input/Output Summary:
+New Task input: 31
+Task Completed output: 31
+"]
+	node [fillcolor="" shape=ellipse style=""]
+	"New Tasks" [label="" fixedsize=true height=0.6 shape=circle width=0.6 xlabel=""]
+	Idle [label=<&#9679;> fixedsize=true height=0.6 shape=circle width=0.6 xlabel=""]
+	"Production Process" [label="" fixedsize=true height=0.6 shape=circle width=0.6 xlabel=""]
+	"Production Done" [label="" fixedsize=true height=0.6 shape=circle width=0.6 xlabel=""]
+	"New Task" [label="" fillcolor="white:black:black" fixedsize=true height=0.2 shape=rect style=striped width=0.6 xlabel="New Task"]
+	"New Task" -> "New Tasks" [label=""]
+	"Preprocessing (begin)" [label="" fillcolor="black:white:black" fixedsize=true height=0.2 shape=rect style=striped width=0.6 xlabel="Preprocessing (begin)"]
+	"Preprocessing (begin)_spacer" [label="" height=0 style=invis width=0]
+	"Preprocessing (begin)_table" [label=<<table border='1' cellborder='1' cellspacing='0'><tr><td>energy</td><td>939.19</td></tr></table>> shape=plaintext]
+	"Preprocessing (begin)_spacer" -> "Preprocessing (begin)" [style=invis]
+	"Preprocessing (begin)_spacer" -> "Preprocessing (begin)_table" [style=invis]
+	"New Tasks" -> "Preprocessing (begin)" [label=""]
+	Idle -> "Preprocessing (begin)" [label=""]
+	"Preprocessing (begin)" -> "Production Process" [label=""]
+	"Processing(begin)" [label="" fillcolor="white:white:white" fixedsize=true height=0.2 shape=rect style=striped width=0.6 xlabel="Processing(begin)"]
+	"Processing(begin)_spacer" [label="" height=0 style=invis width=0]
+	"Processing(begin)_table" [label=<<table border='1' cellborder='1' cellspacing='0'><tr><td>energy</td><td>3100.00</td></tr><tr><td>waste</td><td>46.50</td></tr></table>> shape=plaintext]
+	"Processing(begin)_spacer" -> "Processing(begin)" [style=invis]
+	"Processing(begin)_spacer" -> "Processing(begin)_table" [style=invis]
+	"Production Process" -> "Processing(begin)" [label=""]
+	"Processing(begin)" -> "Production Done" [label=""]
+	"Processing(begin)" -> Idle [label=""]
+	"Task Completed" [label="" fillcolor="black:black:black" fixedsize=true height=0.2 shape=rect style=striped width=0.6 xlabel="Task Completed"]
+	"Production Done" -> "Task Completed" [label=""]
+}

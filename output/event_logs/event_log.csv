@@ -1,0 +1,156 @@
+Time_Stamp,ID,Energy _Stamp,Waste _Stamp,Event
+3.12,2,0.0,0.0,New Task
+3.12,2,0.0,0.0,Preprocessing (begin)
+5.12,3,77.92,0.0,Processing(begin)
+5.12,4,77.92,0.0,Processing(begin)
+5.12,3,177.92,1.5,5.12,Task Completed
+5.13,5,177.92,1.5,5.12,New Task
+5.13,5,177.92,1.5,5.12,Preprocessing (begin)
+7.13,6,178.27,1.5,5.12,Processing(begin)
+7.13,7,178.27,1.5,5.12,Processing(begin)
+7.13,6,278.27,3.0,7.13,Task Completed
+7.2,8,278.27,3.0,7.13,New Task
+7.2,8,278.27,3.0,7.13,Preprocessing (begin)
+9.2,9,280.12,3.0,7.13,Processing(begin)
+9.2,10,280.12,3.0,7.13,Processing(begin)
+9.2,9,380.12,4.5,9.2,Task Completed
+10.79,11,380.12,4.5,9.2,New Task
+10.79,11,380.12,4.5,9.2,Preprocessing (begin)
+12.79,12,419.79,4.5,9.2,Processing(begin)
+12.79,13,419.79,4.5,9.2,Processing(begin)
+12.79,12,519.79,6.0,12.79,Task Completed
+13.81,14,519.79,6.0,12.79,New Task
+13.81,14,519.79,6.0,12.79,Preprocessing (begin)
+15.81,15,545.16,6.0,12.79,Processing(begin)
+15.81,16,545.16,6.0,12.79,Processing(begin)
+15.81,15,645.16,7.5,15.81,Task Completed
+20.81,17,645.16,7.5,15.81,New Task
+20.81,17,645.16,7.5,15.81,Preprocessing (begin)
+22.81,18,770.35,7.5,15.81,Processing(begin)
+22.81,19,770.35,7.5,15.81,Processing(begin)
+22.81,18,870.35,9.0,22.81,Task Completed
+23.15,20,870.35,9.0,22.81,New Task
+23.15,20,870.35,9.0,22.81,Preprocessing (begin)
+25.15,21,878.73,9.0,22.81,Processing(begin)
+25.15,22,878.73,9.0,22.81,Processing(begin)
+25.15,21,978.73,10.5,25.15,Task Completed
+25.39,23,978.73,10.5,25.15,New Task
+25.39,23,978.73,10.5,25.15,Preprocessing (begin)
+27.39,24,984.84,10.5,25.15,Processing(begin)
+27.39,25,984.84,10.5,25.15,Processing(begin)
+27.39,24,1084.84,12.0,27.39,Task Completed
+28.47,26,1084.84,12.0,27.39,New Task
+28.47,26,1084.84,12.0,27.39,Preprocessing (begin)
+30.47,27,1111.65,12.0,27.39,Processing(begin)
+30.47,28,1111.65,12.0,27.39,Processing(begin)
+30.47,27,1211.65,13.5,30.47,Task Completed
+33.13,29,1211.65,13.5,30.47,New Task
+33.13,29,1211.65,13.5,30.47,Preprocessing (begin)
+35.13,30,1278.36,13.5,30.47,Processing(begin)
+35.13,31,1278.36,13.5,30.47,Processing(begin)
+35.13,30,1378.36,15.0,35.13,Task Completed
+36.85,32,1378.36,15.0,35.13,New Task
+36.85,32,1378.36,15.0,35.13,Preprocessing (begin)
+38.85,33,1421.25,15.0,35.13,Processing(begin)
+38.85,34,1421.25,15.0,35.13,Processing(begin)
+38.85,33,1521.25,16.5,38.85,Task Completed
+39.04,35,1521.25,16.5,38.85,New Task
+39.04,35,1521.25,16.5,38.85,Preprocessing (begin)
+41.04,36,1526.07,16.5,38.85,Processing(begin)
+41.04,37,1526.07,16.5,38.85,Processing(begin)
+41.04,36,1626.07,18.0,41.04,Task Completed
+42.23,38,1626.07,18.0,41.04,New Task
+42.23,38,1626.07,18.0,41.04,Preprocessing (begin)
+44.23,39,1655.71,18.0,41.04,Processing(begin)
+44.23,40,1655.71,18.0,41.04,Processing(begin)
+44.23,39,1755.71,19.5,44.23,Task Completed
+45.47,41,1755.71,19.5,44.23,New Task
+45.47,41,1755.71,19.5,44.23,Preprocessing (begin)
+47.47,42,1786.82,19.5,44.23,Processing(begin)
+47.47,43,1786.82,19.5,44.23,Processing(begin)
+47.47,42,1886.82,21.0,47.47,Task Completed
+47.88,44,1886.82,21.0,47.47,New Task
+47.88,44,1886.82,21.0,47.47,Preprocessing (begin)
+49.88,45,1896.99,21.0,47.47,Processing(begin)
+49.88,46,1896.99,21.0,47.47,Processing(begin)
+49.88,45,1996.99,22.5,49.88,Task Completed
+51.21,47,1996.99,22.5,49.88,New Task
+51.21,47,1996.99,22.5,49.88,Preprocessing (begin)
+53.21,48,2030.15,22.5,49.88,Processing(begin)
+53.21,49,2030.15,22.5,49.88,Processing(begin)
+53.21,48,2130.15,24.0,53.21,Task Completed
+54.47,50,2130.15,24.0,53.21,New Task
+54.47,50,2130.15,24.0,53.21,Preprocessing (begin)
+56.47,51,2161.72,24.0,53.21,Processing(begin)
+56.47,52,2161.72,24.0,53.21,Processing(begin)
+56.47,51,2261.72,25.5,56.47,Task Completed
+57.21,53,2261.72,25.5,56.47,New Task
+57.21,53,2261.72,25.5,56.47,Preprocessing (begin)
+59.21,54,2280.36,25.5,56.47,Processing(begin)
+59.21,55,2280.36,25.5,56.47,Processing(begin)
+59.21,54,2380.36,27.0,59.21,Task Completed
+60.56,56,2380.36,27.0,59.21,New Task
+60.56,56,2380.36,27.0,59.21,Preprocessing (begin)
+62.56,57,2414.01,27.0,59.21,Processing(begin)
+62.56,58,2414.01,27.0,59.21,Processing(begin)
+62.56,57,2514.01,28.5,62.56,Task Completed
+65.93,59,2514.01,28.5,62.56,New Task
+65.93,59,2514.01,28.5,62.56,Preprocessing (begin)
+67.93,60,2598.35,28.5,62.56,Processing(begin)
+67.93,61,2598.35,28.5,62.56,Processing(begin)
+67.93,60,2698.35,30.0,67.93,Task Completed
+68.07,62,2698.35,30.0,67.93,New Task
+68.07,62,2698.35,30.0,67.93,Preprocessing (begin)
+70.07,63,2701.82,30.0,67.93,Processing(begin)
+70.07,64,2701.82,30.0,67.93,Processing(begin)
+70.07,63,2801.82,31.5,70.07,Task Completed
+71.26,65,2801.82,31.5,70.07,New Task
+71.26,65,2801.82,31.5,70.07,Preprocessing (begin)
+73.26,66,2831.57,31.5,70.07,Processing(begin)
+73.26,67,2831.57,31.5,70.07,Processing(begin)
+73.26,66,2931.57,33.0,73.26,Task Completed
+73.38,68,2931.57,33.0,73.26,New Task
+73.38,68,2931.57,33.0,73.26,Preprocessing (begin)
+75.38,69,2934.53,33.0,73.26,Processing(begin)
+75.38,70,2934.53,33.0,73.26,Processing(begin)
+75.38,69,3034.53,34.5,75.38,Task Completed
+76.81,71,3034.53,34.5,75.38,New Task
+76.81,71,3034.53,34.5,75.38,Preprocessing (begin)
+78.81,72,3070.22,34.5,75.38,Processing(begin)
+78.81,73,3070.22,34.5,75.38,Processing(begin)
+78.81,72,3170.22,36.0,78.81,Task Completed
+79.35,74,3170.22,36.0,78.81,New Task
+79.35,74,3170.22,36.0,78.81,Preprocessing (begin)
+81.35,75,3183.75,36.0,78.81,Processing(begin)
+81.35,76,3183.75,36.0,78.81,Processing(begin)
+81.35,75,3283.75,37.5,81.35,Task Completed
+84.14,77,3283.75,37.5,81.35,New Task
+84.14,77,3283.75,37.5,81.35,Preprocessing (begin)
+86.14,78,3353.53,37.5,81.35,Processing(begin)
+86.14,79,3353.53,37.5,81.35,Processing(begin)
+86.14,78,3453.53,39.0,86.14,Task Completed
+86.43,80,3453.53,39.0,86.14,New Task
+86.43,80,3453.53,39.0,86.14,Preprocessing (begin)
+88.43,81,3460.67,39.0,86.14,Processing(begin)
+88.43,82,3460.67,39.0,86.14,Processing(begin)
+88.43,81,3560.67,40.5,88.43,Task Completed
+90.44,83,3560.67,40.5,88.43,New Task
+90.44,83,3560.67,40.5,88.43,Preprocessing (begin)
+92.44,84,3610.9,40.5,88.43,Processing(begin)
+92.44,85,3610.9,40.5,88.43,Processing(begin)
+92.44,84,3710.9,42.0,92.44,Task Completed
+92.46,86,3710.9,42.0,92.44,New Task
+92.46,86,3710.9,42.0,92.44,Preprocessing (begin)
+94.46,87,3711.6,42.0,92.44,Processing(begin)
+94.46,88,3711.6,42.0,92.44,Processing(begin)
+94.46,87,3811.6,43.5,94.46,Task Completed
+95.12,89,3811.6,43.5,94.46,New Task
+95.12,89,3811.6,43.5,94.46,Preprocessing (begin)
+97.12,90,3828.06,43.5,94.46,Processing(begin)
+97.12,91,3828.06,43.5,94.46,Processing(begin)
+97.12,90,3928.06,45.0,97.12,Task Completed
+97.57,92,3928.06,45.0,97.12,New Task
+97.57,92,3928.06,45.0,97.12,Preprocessing (begin)
+99.57,93,3939.19,45.0,97.12,Processing(begin)
+99.57,94,3939.19,45.0,97.12,Processing(begin)
+99.57,93,4039.19,46.5,99.57,Task Completed
