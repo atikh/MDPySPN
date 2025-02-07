@@ -1,5 +1,5 @@
 import sys
-sys.path.append('C:/Users/iu4647/Desktop/MDPySPN-main/MDPySPN-main')
+sys.path.append('../MDPySPN')
 #########################/
 ## Imports ##
 #########################
