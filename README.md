@@ -70,8 +70,8 @@ Additionally, in this code, we define special transitions as "Multidimensional T
 To define which dimensions are affected by the transition we use "dimension_changes" which by default is None.
 ```bash
 t3 = Transition("Processing", "T")
-t3.add_dimension_change("energy", "rate", 25)
-t3.add_dimension_change("waste", "fixed",  20)
+t3.add_dimension_change("energy", "rate", 25) # which shows this transition is contributing to the energy dimension.
+t3.add_dimension_change("waste", "fixed",  20) # which shows this transition is contributing to the waste dimension.
 ```
 
 We define specific input and output places within the model to track the system and also can be used as debugging items to check the transition behavior regarding the token destruction and generation.
