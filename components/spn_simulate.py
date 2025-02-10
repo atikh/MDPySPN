@@ -469,10 +469,11 @@ def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, p
     global SIMULATION_TIME, SIMULATION_TIME_UNIT, VERBOSITY, PROTOCOL, tracking_places
 
     VERBOSITY = verbosity
+    spn.simulation_time = max_time  # Store max_time in the SPN object
 
     if VERBOSITY > 0:
         print("Starting simulation...")
-        print("Simulation time limit = {}".format(max_time))
+        print(f"Simulation time limit = {spn.simulation_time}")
 
     SIMULATION_TIME = 0
     SIMULATION_TIME_UNIT = time_unit
