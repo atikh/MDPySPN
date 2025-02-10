@@ -6,6 +6,7 @@ class SPN(object):
         # Dynamically import Total_Dimensions from Main.py
         main_module = importlib.import_module("Main")
         self.dimensions = getattr(main_module, 'Total_Dimensions', None)
+        self.simulation_time = 0  # Store the simulation time
         self.places = []
         self.transitions = []
 
