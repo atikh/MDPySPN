@@ -189,12 +189,14 @@ At the end of the simulation run, if the **show** option is enabled, a **PDF fil
 
 ## Multidimensional Event Log
 MDPySPN provides a multidimensional event log as an output of the simulation. Each entry in a multidimensional event log captures a specific process step, such as the beginning or conclusion of an activity. It tracks changes across predefined dimensions, each noted as "dimension_stamp". This logging approach facilitates system analysis and supports multi-flow process mining, useful for data-driven simulation and Digital Twin model extraction. Following is the excerpt multidimensional event log of the simulation model:
+
 ![image](https://github.com/user-attachments/assets/6e317653-0848-4755-a36a-293ad5f375c1)
 
 
 ## Usage & Attribution
 
-If you are using the tool for a scientific project please consider citing our [publication](https://www.researchgate.net/publication/375758652_PySPN_An_Extendable_Python_Library_for_Modeling_Simulation_of_Stochastic_Petri_Nets):
+If you are using the tool for a scientific project please consider citing our [publication]
+(https://www.researchgate.net/publication/375758652_PySPN_An_Extendable_Python_Library_for_Modeling_Simulation_of_Stochastic_Petri_Nets):
 
     #  - ...
     @misc{} 
