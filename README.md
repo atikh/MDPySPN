@@ -196,9 +196,7 @@ MDPySPN provides a multidimensional event log as an output of the simulation. Ea
 ## Usage & Attribution
 
 If you are using the tool for a scientific project please consider citing our [publication]
-(https://www.researchgate.net/publication/375758652_PySPN_An_Extendable_Python_Library_for_Modeling_Simulation_of_Stochastic_Petri_Nets):
-
-    #  - ...
+ #  - ...
     @misc{} 
 
 For questions/feedback feel free to contact me: atieh.khodadadi@kit.edu
