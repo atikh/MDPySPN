@@ -12,36 +12,30 @@ def format_label(value):
 
 from graphviz import Digraph
 
-from graphviz import Digraph
 
 def draw_spn(spn, file="spn_default", show=True, print_place_labels=False, rankdir="TB"):
     spn_graph = Digraph(engine="dot", graph_attr={'rankdir': rankdir})
 
-    # Prepare the dimension summary text
-    dimension_summary = "Summary of Dimensions:\n"
+    # Fetch simulation time directly from the SPN object
+    simulation_time = spn.simulation_time
+
+    # Display simulation time explicitly
+    dimension_summary = f"Simulation Clock:\nTime: {simulation_time:.2f}\n"
 
     # Sum all tracked dimension values from places and transitions
     dimension_totals = {}
 
-    # Add values from transition tables
+    dimension_totals = {}
     for transition in spn.transitions:
         for dimension, value in transition.dimension_table.items():
-            dimension_totals[dimension] = dimension_totals.get(dimension, 0) + value
+            if dimension:
+                dimension_totals[dimension] = dimension_totals.get(dimension, 0) + value
 
-    # Add the final summed values to the summary text
+    # Add dimensions to the summary
     for dim, total_value in dimension_totals.items():
-        if dim is not None:  # Ensure None values are excluded
-            dimension_summary += f"{dim}: {total_value:.2f}\n"
+        dimension_summary += f"{dim}: {total_value:.2f}\n"
 
-    # Add input and output values for transitions
-    input_output_summary = "Input/Output Summary:\n"
-    for transition in spn.transitions:
-        if hasattr(transition, 'input_value'):
-            input_output_summary += f"{transition.label} input: {transition.input_value}\n"
-        if hasattr(transition, 'output_value'):
-            input_output_summary += f"{transition.label} output: {transition.output_value}\n"
-
-    summary_text = dimension_summary + "\n" + input_output_summary
+    summary_text = dimension_summary
 
     # Add a text box at the top left of the diagram for the summary with a gray background
     spn_graph.attr('node', shape='plaintext', style='filled', fillcolor='lightgrey')
