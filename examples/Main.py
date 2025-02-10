@@ -1,4 +1,5 @@
 import sys
+
 sys.path.append('../MDPySPN')
 #########################/
 ## Imports ##
@@ -12,7 +13,7 @@ from components.spn import SPN
 
 ## Define Dimensions and return to all ##
 #########################
-Total_Dimensions = ['time', 'energy', 'waste']
+Total_Dimensions = ['Time', 'Energy', 'Waste']
 
 if __name__ == "__main__":
     spn = SPN()
@@ -21,18 +22,18 @@ if __name__ == "__main__":
 ## Define Places and Transitions ##
 #########################
     p1 = Place("New Tasks")
-    pI1 = Place("Idle",1, DoT=1, dimension_tracked="energy")
+    pI1 = Place("Idle",1, DoT=1, dimension_tracked="Energy")
     p2 = Place("Production Process")
     p3= Place("Production Done")
 
     Mt1 = Transition("New Task","T", input_transition=True)
     Mt1.set_distribution("expon", a=2, b=1.0/1.0)
     Mt2 = Transition("Preprocessing (begin)","I", Join=1)
-    Mt2.add_dimension_change("energy", "rate", 25)
+    Mt2.add_dimension_change("Energy", "rate", 25)
     Mt3 = Transition("Processing (begin)", "T", Fork=1)
     Mt3.set_distribution("det", a=2)
-    Mt3.add_dimension_change("energy", "rate", 50)
-    Mt3.add_dimension_change("waste", "fixed",  1.5)
+    Mt3.add_dimension_change("Energy", "rate", 50)
+    Mt3.add_dimension_change("Waste", "fixed",  1.5)
     Mt4 = Transition("Task Completed", "I", output_transition=True)
 
 
