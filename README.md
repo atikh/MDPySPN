@@ -185,7 +185,8 @@ The output can be defined as a visualization in the form of an MDSPN diagram, an
 draw_spn(spn, show=True)
 ```
 Sample multidimensional SPN graph:
-![image](https://github.com/user-attachments/assets/de8acd42-e5cd-4032-9b39-5be2588fa4aa)
+![image](https://github.com/user-attachments/assets/5896cc0c-2ce2-422b-a00d-c69fca909c36)
+
 
 At the end of the simulation run, if the **show** option is enabled, a **PDF file** will be generated containing a detailed visualization of the final state of the simulation. This graph includes key performance indicators (**KPIs**) such as **input/output statistics** and the **final A
 
