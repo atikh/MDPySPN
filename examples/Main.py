@@ -13,7 +13,7 @@ from components.spn import SPN
 
 ## Define Dimensions and return to all ##
 #########################
-Total_Dimensions = ['Time', 'Energy', 'Waste']
+Total_Dimensions = ['time', 'Energy', 'Waste']
 
 if __name__ == "__main__":
     spn = SPN()
