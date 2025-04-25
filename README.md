@@ -24,6 +24,8 @@ We define the dimensions in interest and return the same as the following exampl
 ```bash
 Total_Dimensions = ['time', 'energy', 'waste']
 ```
+The "time" dimension must always be listed first in the Total_Dimensions list and must be explicitly named "Time" (case-sensitive). 
+
 
 Formally, the class of SPNs that can be modeled using *PySPN* is defined as:
 
