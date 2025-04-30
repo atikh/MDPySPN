@@ -82,10 +82,6 @@ t1 = Transition("Transition 1","T", input_transition=True)
 tN = Transition("Transition N","T", output_transition=True)
 ```
 
-Transitions can destroy multiple tokens and create new ones in the next palace each time they fire, to handle this number we added the item "capacity" which is by default 0.
-```bash
-t1 = Transition("Transition 1","T", capacity=100)
-```
 
 For timed transitions, some of the supported distributions are:
 
