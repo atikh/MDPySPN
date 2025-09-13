@@ -23,6 +23,8 @@ class SPN(object):
         arc.multiplicity = multiplicity
         transition.input_arcs.append(arc)
         place.input_arcs.append(arc)
+        # Auto-set Join: more than one distinct input place -> Join
+        transition.Join = len(transition.input_arcs) > 1
 
     def add_output_arc(self, transition, place, multiplicity=1):
         arc = OutputArc()
@@ -31,6 +33,8 @@ class SPN(object):
         arc.multiplicity = multiplicity
         transition.output_arcs.append(arc)
         place.output_arcs.append(arc)
+        # Auto-set Fork: more than one distinct output place -> Fork
+        transition.Fork = len(transition.output_arcs) > 1
 
     def add_inhibitor_arc(self, transition, place, multiplicity=1):
         arc = InhibitorArc()
@@ -129,6 +133,11 @@ class Place:
         else:
             raise ValueError("This place is not a dimension holder.")
 
+    def refresh_join_fork(self):
+        """Recompute Join/Fork flags for all transitions based on arc counts."""
+        for t in self.transitions:
+            t.Join = len(t.input_arcs) > 1
+            t.Fork = len(t.output_arcs) > 1
 
 class Transition(object):
 
