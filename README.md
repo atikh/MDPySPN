@@ -186,8 +186,7 @@ MDPySPN provides a multidimensional event log as an output of the simulation. Ea
 ## Usage & Attribution
 
 If you are using the tool for a scientific project please consider citing our [publication]
- #  - ...
-    @misc{} 
+ #  - Khodadadi, Atieh, and Sanja Lazarova-Molnar. "Multidimensional Stochastic Petri Nets: A Novel Approach to Modeling and Simulation of Stochastic Discrete-Event Systems." IEEE SMC (2025).
 
 For questions/feedback feel free to contact me: atieh.khodadadi@kit.edu
 
