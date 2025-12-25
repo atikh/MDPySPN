@@ -1,5 +1,6 @@
 import random
 import os
+import math
 
 from .spn import *
 from .spn_io import *
@@ -14,23 +15,30 @@ SCHEDULE_ITERATOR = 0
 # Global list to track places with DoT
 tracking_places = []
 
+
 def marking(place: Place) -> int:
     return place.n_tokens
 
+
 def mean_tokens(place: Place) -> float:
-    return place.total_tokens/SIMULATION_TIME
+    return place.total_tokens / SIMULATION_TIME
+
 
 def p_not_empty(place: Place) -> float:
-    return place.time_non_empty/SIMULATION_TIME
+    return place.time_non_empty / SIMULATION_TIME
+
 
 def p_enabled(transition: Transition) -> float:
-    return transition.time_enabled/SIMULATION_TIME
+    return transition.time_enabled / SIMULATION_TIME
+
 
 def n_firings(transtion: Transition) -> int:
     return transtion.n_times_fired
 
+
 def throughput(transition: Transition) -> float:
-    return transition.n_times_fired/SIMULATION_TIME
+    return transition.n_times_fired / SIMULATION_TIME
+
 
 def add_tokens(place: Place, n_tokens: int):
     # Assuming `tokens` is a list of token IDs in the Place class
@@ -46,12 +54,12 @@ def add_tokens(place: Place, n_tokens: int):
         place.time_non_empty += SIMULATION_TIME - place.time_changed
 
     place.time_changed = SIMULATION_TIME
-    place.n_tokens=len(place.tokens)
+    place.n_tokens = len(place.tokens)
     place.n_tokens += n_tokens
 
     # Handle the addition of new tokens
     for _ in range(n_tokens):
-        new_token_id = ... # Generate a new token ID here, as per your token generation logic
+        new_token_id = ...  # Generate a new token ID here, as per your token generation logic
         place.tokens.append(new_token_id)
 
     if len(place.tokens) > place.max_tokens:
@@ -64,16 +72,17 @@ def add_tokens(place: Place, n_tokens: int):
 
 def sub_tokens(place: Place, n_tokens: int):
     if PROTOCOL == True:
-        write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
-    place.total_tokens += place.n_tokens*(SIMULATION_TIME-place.time_changed)
+        write_to_protocol(place.label, SIMULATION_TIME, place.n_tokens)
+    place.total_tokens += place.n_tokens * (SIMULATION_TIME - place.time_changed)
     if place.n_tokens > 0:
-        place.time_non_empty += (SIMULATION_TIME-place.time_changed)
+        place.time_non_empty += (SIMULATION_TIME - place.time_changed)
     place.time_changed = SIMULATION_TIME
     place.n_tokens -= n_tokens
     if place.n_tokens < 0:
         print("Negative number of tokens in Place {}".format(place))
     if PROTOCOL == True:
-        write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
+        write_to_protocol(place.label, SIMULATION_TIME, place.n_tokens)
+
 
 def get_initial_marking(spn: SPN):
     marking = {}
@@ -86,25 +95,27 @@ def get_initial_marking(spn: SPN):
 
 def set_initial_marking(spn: SPN, marking):
     for place in spn.places:
-        place:Place
+        place: Place
         place.n_tokens = marking[place]
+
 
 def reset_state(spn: SPN, marking):
     for place in spn.places:
-        place:Place
+        place: Place
         place.n_tokens = 0
         place.time_changed = 0.0
         place.total_tokens = 0.0
         place.time_non_empty = 0.0
-    
+
     for transition in spn.transitions:
-        transition:Transition
+        transition: Transition
         transition.time_enabled = 0
         transition.n_times_fired = 0
         transition.enabled_at = 0
         transition.enabled = False
-    
+
     set_initial_marking(spn, marking)
+
 
 def complete_statistics(spn: SPN):
     for place in spn.places:
@@ -113,6 +124,7 @@ def complete_statistics(spn: SPN):
         transition: Transition
         if transition.enabled == True:
             transition.time_enabled += SIMULATION_TIME - transition.enabled_at
+
 
 def set_firing_time(transition: Transition):
     """Sets the firing time of a transition based on the transition type and distribution"""
@@ -127,7 +139,7 @@ def set_firing_time(transition: Transition):
         parameters = list(transition.distribution[dist].values())
         match dist:
             case "det":
-                transition.firing_delay = get_delay("det", parameters[0])   
+                transition.firing_delay = get_delay("det", parameters[0])
             case "uniform":
                 transition.firing_delay = get_delay("uniform", parameters[0], parameters[1])
             case "expon":
@@ -148,23 +160,25 @@ def set_firing_time(transition: Transition):
                 transition.firing_delay = get_delay("weibull_min", parameters[0], parameters[1], parameters[2])
             case _:
                 raise Exception("Distribution undefined for transition {}".format(transition))
-            
+
     if transition.handicap != 1:
         if transition.handicap_type == "increase":
-            transition.firing_delay = round(transition.handicap,2)*transition.firing_delay
+            transition.firing_delay = round(transition.handicap, 2) * transition.firing_delay
         elif transition.handicap_type == "decrease":
-            transition.firing_delay = transition.firing_delay/round(transition.handicap,2)
+            transition.firing_delay = transition.firing_delay / round(transition.handicap, 2)
 
-    
     if transition.t_type == "T" and SIMULATION_TIME_UNIT != None:
-        transition.firing_delay = convert_delay(transition.firing_delay, time_unit=transition.time_unit, simulation_time_unit=SIMULATION_TIME_UNIT)
+        transition.firing_delay = convert_delay(transition.firing_delay, time_unit=transition.time_unit,
+                                                simulation_time_unit=SIMULATION_TIME_UNIT)
 
     transition.firing_time = transition.enabled_at + transition.firing_delay
+
 
 def set_reset_time(transition: Transition):
     transition.reset_time = transition.enabled_at + transition.reset_threshold
 
-def convert_delay(delay, time_unit = None, simulation_time_unit = None):
+
+def convert_delay(delay, time_unit=None, simulation_time_unit=None):
     if time_unit == "d" and simulation_time_unit == "h":
         return delay * 24
     else:
@@ -202,7 +216,7 @@ def update_enabled_flag(spn: SPN):
 
     for transition in spn.transitions:
         if is_enabled(transition) == False:
-            #Transition is Race Enable and has just become disabled
+            # Transition is Race Enable and has just become disabled
             if transition.enabled == True and transition.memory_policy == "AGE":
                 transition.disabled_at = SIMULATION_TIME
                 transition.clock_active = True
@@ -211,11 +225,12 @@ def update_enabled_flag(spn: SPN):
 
     for transition in spn.transitions:
         if is_enabled(transition) == True:
-            #Transition has just become enabled
+            # Transition has just become enabled
             if transition.enabled == False:
                 if transition.clock_active == True:
                     transition.disabled_time += SIMULATION_TIME - transition.disabled_at
-                else: set_firing_time(transition)
+                else:
+                    set_firing_time(transition)
             transition.enabled = True
             found_enabled = True
 
@@ -271,7 +286,7 @@ def fire_transition(transition: Transition, spn: SPN):
         write_to_event_log(SIMULATION_TIME, new_token.id, transition.label, transition, spn)
 
     ##############################
-   # Track the entrance time and place details for DoT places
+    # Track the entrance time and place details for DoT places
     for oarc in transition.output_arcs:
         if oarc.to_place.DoT == 1:
             for iarc in transition.input_arcs:
@@ -302,7 +317,7 @@ def fire_transition(transition: Transition, spn: SPN):
                 if iarc.from_place.tokens:
                     token_id = iarc.from_place.tokens.pop(0)
                     tokens_moved += 1
-                    #write_to_event_log(SIMULATION_TIME, token_id, transition.label)  # Log every token movement
+                    # write_to_event_log(SIMULATION_TIME, token_id, transition.label)  # Log every token movement
         if transition.counter <= len(transition.output_arcs):
             for oarc in transition.output_arcs:
                 for _ in range(tokens_to_move):
@@ -323,7 +338,7 @@ def fire_transition(transition: Transition, spn: SPN):
                     if iarc.from_place.tokens:
                         token_id = iarc.from_place.tokens.pop(0)
                         tokens_moved += 1
-                        #write_to_event_log(SIMULATION_TIME, token_id, transition.label)
+                        # write_to_event_log(SIMULATION_TIME, token_id, transition.label)
                 transition.counter += 1
                 if transition.counter == len(transition.input_arcs):  # Log on last iteration
                     transition.counter = 0
@@ -335,7 +350,7 @@ def fire_transition(transition: Transition, spn: SPN):
                     if iarc.from_place.tokens:
                         token_id = iarc.from_place.tokens.pop(0)
                         tokens_moved += 1
-                        #write_to_event_log(SIMULATION_TIME, token_id, transition.label)
+                        # write_to_event_log(SIMULATION_TIME, token_id, transition.label)
                         for oarc in transition.output_arcs:
                             oarc.to_place.tokens.append(token_id)
                             if index == iarc.multiplicity - 1 and PROTOCOL:
@@ -344,29 +359,30 @@ def fire_transition(transition: Transition, spn: SPN):
 
     if not transition.input_arcs:
         for oarc in transition.output_arcs:
-            #write_to_event_log(SIMULATION_TIME, token_id, transition.label)  # Log every token movement
+            # write_to_event_log(SIMULATION_TIME, token_id, transition.label)  # Log every token movement
             for index in range(oarc.multiplicity):
                 write_to_protocol(oarc.to_place.label, SIMULATION_TIME, len(oarc.to_place.tokens))
                 oarc.to_place.tokens.append(new_token.id)
                 if index == oarc.multiplicity - 1 and PROTOCOL:
-                    write_to_protocol(oarc.to_place.label, SIMULATION_TIME, len(oarc.to_place.tokens))  # Log after moving
-
+                    write_to_protocol(oarc.to_place.label, SIMULATION_TIME,
+                                      len(oarc.to_place.tokens))  # Log after moving
 
     # Handle dimension changes
     if transition.dimension_changes:
         for dimension, change_type, value in transition.dimension_changes:
             if dimension in transition.dimension_table:
                 if change_type == "fixed":
-                    transition.dimension_table[dimension] += value* transition.capacity
+                    transition.dimension_table[dimension] += value
                 elif change_type == "rate":
-                    calculated_change = value * transition.firing_delay * transition.capacity
+                    def fix_fraction2(x: float) -> float:
+                        m = math.floor(x)  # integer part
+                        frac_hundred = math.floor((x - m) * 100)  # truncated hundredths
+                        if frac_hundred >= 60:
+                            frac_hundred -= 60
+                        return m + frac_hundred / 100.0
+
+                    calculated_change = value * fix_fraction2(transition.firing_delay)
                     transition.dimension_table[dimension] += calculated_change
-            else:
-                # Initialize the dimension in the table if not already present
-                if change_type == "fixed":
-                    transition.dimension_table[dimension] = value* transition.capacity
-                elif change_type == "rate":
-                    transition.dimension_table[dimension] = value * transition.firing_delay * transition.capacity
 
     # Check if input places are DoT and calculate the duration
     for iarc in transition.input_arcs:
@@ -384,9 +400,6 @@ def fire_transition(transition: Transition, spn: SPN):
 
                         if dimension in transition.dimension_table:
                             transition.dimension_table[dimension] += duration * value
-                        else:
-                            transition.dimension_table[dimension] = duration * value
-                        print("DU", transition.dimension_table[dimension] , duration, value)
 
                 # Remove the processed tracking entry to avoid duplication
                 tracking_places.remove(tracking_entry)
@@ -411,10 +424,7 @@ def fire_transition(transition: Transition, spn: SPN):
     transition.enabled = False
 
 
-
-
-def find_next_firing(spn:SPN)-> Transition:
-
+def find_next_firing(spn: SPN) -> Transition:
     total_prob = 0.0
     inc_prob = 0.0
     min_time = 1.0e9
@@ -423,16 +433,16 @@ def find_next_firing(spn:SPN)-> Transition:
     for transition in spn.transitions:
         if transition.enabled == True and transition.t_type == "I":
             total_prob = total_prob + transition.weight
-    
+
     if total_prob > 0:
         min_time = SIMULATION_TIME
-        ran = random.uniform(0,total_prob)
+        ran = random.uniform(0, total_prob)
         for transition in spn.transitions:
             if transition.enabled == True and transition.t_type == "I":
                 inc_prob = inc_prob + transition.weight
                 if inc_prob > ran:
                     return transition, min_time
-                
+
     for transition in spn.transitions:
         if transition.enabled == True:
             firing_due_at = transition.enabled_at + transition.firing_delay
@@ -441,8 +451,8 @@ def find_next_firing(spn:SPN)-> Transition:
                 next_trans = transition
     return next_trans, min_time
 
-def process_next_event(spn: SPN, max_time):
 
+def process_next_event(spn: SPN, max_time):
     global SIMULATION_TIME
 
     next_transition, min_time = find_next_firing(spn)
@@ -455,15 +465,17 @@ def process_next_event(spn: SPN, max_time):
     fire_transition(next_transition, spn)
 
     if VERBOSITY > 1:
-        print("\nTransition {} fires at time {}".format(next_transition.label, round(SIMULATION_TIME,2)))
+        print("\nTransition {} fires at time {}".format(next_transition.label, round(SIMULATION_TIME, 2)))
 
     if VERBOSITY > 2:
-        print_marking(spn,SIMULATION_TIME)
-    
+        print_marking(spn, SIMULATION_TIME)
+
     found_enabled = update_enabled_flag(spn)
     return found_enabled
 
-def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, protocol=True, event_log=True,Dimensions=None):
+
+def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, protocol=True, event_log=True,
+             Dimensions=None):
     print("Simulation starts", Dimensions)
 
     global SIMULATION_TIME, SIMULATION_TIME_UNIT, VERBOSITY, PROTOCOL, tracking_places
@@ -539,9 +551,9 @@ def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, p
     # Calculate input and output values for transitions
     for transition in spn.transitions:
         if transition.input_transition:
-            transition.input_value = transition.n_times_fired * transition.capacity
+            transition.input_value = transition.n_times_fired
         if transition.output_transition:
-            transition.output_value = transition.n_times_fired * transition.capacity
+            transition.output_value = transition.n_times_fired
 
     for transition in spn.transitions:
         if hasattr(transition, 'input_value'):
@@ -562,3 +574,95 @@ def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, p
         if dimension is not None:  # Ensure None values are excluded
             print(f"{dimension}: {total:.2f}")
     print("Simulation ends")
+
+    ############################
+    ####WRITE KPIs#############
+    ############################
+    try:
+        dims_source = Dimensions if Dimensions else getattr(spn, "dimensions", None)
+        if dims_source:
+            dims_order = [d for d in dims_source if d not in (None, "time")]
+        else:
+            dims_order = [d for d in dimension_totals.keys() if d not in (None, "time")]
+    except Exception:
+        dims_order = [d for d in dimension_totals.keys() if d not in (None, "time")]
+
+    # Check if there is ANY input/output transition info at all
+    has_input = any(getattr(t, "input_transition", False) or hasattr(t, "input_value") for t in spn.transitions)
+    has_output = any(getattr(t, "output_transition", False) or hasattr(t, "output_value") for t in spn.transitions)
+
+    header = ["Time_Stamp"]
+    row = [round(SIMULATION_TIME, 2)]
+
+    # Only calculate/write Inputs, Outputs, Throughput if at least one exists
+    if has_input or has_output:
+        # Detect transitions that actually have input/output values (same logic as your print loop)
+        input_transitions = [t for t in spn.transitions if hasattr(t, "input_value")]
+        output_transitions = [t for t in spn.transitions if hasattr(t, "output_value")]
+
+        has_input = len(input_transitions) > 0
+        has_output = len(output_transitions) > 0
+
+        header = ["Time_Stamp"]
+        row = [round(SIMULATION_TIME, 2)]
+
+        # Only calculate/write these 3 if we have ANY input/output transitions
+        if has_input or has_output:
+            if has_input:
+                Inputt = sum(float(getattr(t, "input_value", 0) or 0) for t in input_transitions)
+                header.append("Inputs")
+                row.append(round(Inputt, 2))
+
+            if has_output:
+                Ouputt = sum(float(getattr(t, "output_value", 0) or 0) for t in output_transitions)
+                header.append("Outputs")
+                row.append(round(Ouputt, 2))
+
+            # Throughput only if both exist and Inputs != 0
+            if has_input and has_output:
+                Throughputt = (Ouputt / Inputt) if Inputt != 0 else 0.0
+                header.append("Throughput")
+                row.append(round(Throughputt, 2))
+
+        # Always write dimensions
+        header += dims_order
+        row += [round(float(dimension_totals.get(d, 0.0)), 2) for d in dims_order]
+
+        write_kpis_to_csv(row, path="../output/KPI/kpi.csv", header=header)
+
+
+def write_kpis_to_csv(data, path="../output/KPI/kpi.csv", header=None):
+    import csv
+    import os
+
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+
+    # If file exists and header changed, rewrite file with the new header and pad old rows
+    if header is not None and os.path.exists(path) and os.stat(path).st_size > 0:
+        with open(path, "r", newline="") as f:
+            reader = csv.reader(f)
+            existing_header = next(reader, None)
+            existing_rows = list(reader)
+
+        if existing_header != header:
+            fixed_rows = []
+            for r in existing_rows:
+                if len(r) < len(header):
+                    r = r + [""] * (len(header) - len(r))
+                elif len(r) > len(header):
+                    r = r[:len(header)]
+                fixed_rows.append(r)
+
+            with open(path, "w", newline="") as f:
+                writer = csv.writer(f)
+                writer.writerow(header)
+                writer.writerows(fixed_rows)
+
+    # Write header only if file is empty/new
+    write_header = header is not None and (not os.path.exists(path) or os.stat(path).st_size == 0)
+
+    with open(path, "a", newline="") as file:
+        writer = csv.writer(file)
+        if write_header:
+            writer.writerow(header)
+        writer.writerow(data)
