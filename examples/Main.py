@@ -1,6 +1,9 @@
 import sys
+from pathlib import Path
 
-sys.path.append('../MDPySPN')
+BASE_DIR = Path(__file__).resolve().parent
+PARENT_DIR = BASE_DIR.parent                        # one folder above
+sys.path.insert(0, str(PARENT_DIR))
 #########################/
 ## Imports ##
 #########################
