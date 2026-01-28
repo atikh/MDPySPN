@@ -748,15 +748,8 @@ def fire_transition(transition: Transition, spn: SPN):
                 transition.dimension_table[dimension] += value
 
             elif change_type == "rate":
-                def fix_fraction2(x: float) -> float:
-                    m = math.floor(x)
-                    frac_hundred = math.floor((x - m) * 100)
-                    if frac_hundred >= 60:
-                        frac_hundred -= 60
-                    return m + frac_hundred / 100.0
-
                 # ADDED: scale by how many entity-units were actually processed in this fire()
-                transition.dimension_table[dimension] += value * fix_fraction2(transition.firing_delay) * max(1, entities_processed)
+                transition.dimension_table[dimension] += value * transition.firing_delay 
 
     # Check if input places are DoT and calculate the duration
     for iarc in transition.input_arcs:
