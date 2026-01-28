@@ -365,14 +365,39 @@ def fire_parallel_instance(transition: Transition, spn: SPN, instance: dict):
 
     # 1) Move tokens to outputs and write event log (same style as your existing fire_transition)
     for tok in tokens:
+        # Move reserved tokens to outputs
         if transition.output_arcs:
-            for oarc in transition.output_arcs:
-                oarc.to_place.tokens.append(tok)
-            tok_id = tok.id if hasattr(tok, "id") else tok
-            write_to_event_log(SIMULATION_TIME, tok_id, transition.label, transition, spn)
+
+            # Fork: first produced token uses the reserved entity token,
+            # remaining produced tokens are NEW tokens
+            if transition.Fork == 1:
+                entity_token = tokens[0] if tokens else Token()
+                used_entity = False
+
+                for oarc in transition.output_arcs:
+                    for _ in range(oarc.multiplicity):
+                        if not used_entity:
+                            produced = entity_token
+                            used_entity = True
+                        else:
+                            produced = Token()
+
+                        oarc.to_place.tokens.append(produced)
+                        oarc.to_place.n_tokens = len(oarc.to_place.tokens)
+                        write_to_event_log(SIMULATION_TIME, produced.id, transition.label, transition, spn)
+
+            # Non-fork: keep your old behavior (move token to outputs)
+            else:
+                for tok in tokens:
+                    for oarc in transition.output_arcs:
+                        oarc.to_place.tokens.append(tok)
+                        oarc.to_place.n_tokens = len(oarc.to_place.tokens)
+                    write_to_event_log(SIMULATION_TIME, tok.id, transition.label, transition, spn)
+
         else:
-            tok_id = tok.id if hasattr(tok, "id") else tok
-            write_to_event_log(SIMULATION_TIME, tok_id, transition.label, transition, spn)
+            # No outputs: still log the event(s)
+            for tok in tokens:
+                write_to_event_log(SIMULATION_TIME, tok.id, transition.label, transition, spn)
 
     # 2) Apply dimension changes (copy of your logic, but using instance delay)
     if transition.dimension_changes:
@@ -384,15 +409,8 @@ def fire_parallel_instance(transition: Transition, spn: SPN, instance: dict):
                 transition.dimension_table[dimension] += value
 
             elif change_type == "rate":
-                def fix_fraction2(x: float) -> float:
-                    m = math.floor(x)
-                    frac_hundred = math.floor((x - m) * 100)
-                    if frac_hundred >= 60:
-                        frac_hundred -= 60
-                    return m + frac_hundred / 100.0
-
                 eff = float(instance.get("busy_time", delay))
-                transition.dimension_table[dimension] += value * fix_fraction2(eff)
+                transition.dimension_table[dimension] += value * eff
 
     # 3) Update stats (same counters as a normal firing)
     transition.n_times_fired += 1
@@ -514,8 +532,6 @@ def fire_transition(transition: Transition, spn: SPN):
           * all additional produced output tokens are NEW tokens
     """
     global tracking_places
-
-    # Keep n_tokens consistent (optional, but harmless)
     for iarc in transition.input_arcs:
         iarc.from_place.n_tokens = len(iarc.from_place.tokens)
     for oarc in transition.output_arcs:
@@ -532,6 +548,10 @@ def fire_transition(transition: Transition, spn: SPN):
     max_tokens_to_transfer = transition.capacity if transition.capacity is not None else float("inf")
     remaining_cap = max_tokens_to_transfer
 
+    # ADDED: count how many entity-units we actually processed in THIS fire()
+    # (so rate impacts can be scaled correctly)
+    entities_processed = 0
+
     # --------------------------
     # 1) Source transitions (no inputs): create tokens once
     # --------------------------
@@ -545,6 +565,7 @@ def fire_transition(transition: Transition, spn: SPN):
                 oarc.to_place.n_tokens = len(oarc.to_place.tokens)
                 write_to_event_log(SIMULATION_TIME, t.id, transition.label, transition, spn)
                 remaining_cap -= 1
+                entities_processed += 1  # ADDED
 
         # DoT output tracking (keep your existing tracking approach)
         for oarc in transition.output_arcs:
@@ -563,6 +584,25 @@ def fire_transition(transition: Transition, spn: SPN):
         transition.n_times_fired += 1
         transition.time_enabled += transition.firing_delay
         transition.enabled = False
+
+        # IMPORTANT: apply dimension_changes here too (otherwise sources never add rate impacts)
+        if transition.dimension_changes:
+            for dimension, change_type, value in transition.dimension_changes:
+                if dimension not in transition.dimension_table:
+                    transition.dimension_table[dimension] = 0.0
+
+                if change_type == "fixed":
+                    transition.dimension_table[dimension] += value
+                elif change_type == "rate":
+                    def fix_fraction2(x: float) -> float:
+                        m = math.floor(x)
+                        frac_hundred = math.floor((x - m) * 100)
+                        if frac_hundred >= 60:
+                            frac_hundred -= 60
+                        return m + frac_hundred / 100.0
+
+                    transition.dimension_table[dimension] += value * fix_fraction2(transition.firing_delay) * max(1,
+                                                                                                                  entities_processed)
 
         if PROTOCOL:
             for oarc in transition.output_arcs:
@@ -603,7 +643,9 @@ def fire_transition(transition: Transition, spn: SPN):
 
         nid = new_tok.id if hasattr(new_tok, "id") else new_tok
         write_to_event_log(SIMULATION_TIME, nid, transition.label, transition, spn)
+
         remaining_cap -= 1
+        entities_processed += 1  # ADDED
 
     # --------------------------
     # 3) Fork: entity token goes to first produced output token, others are NEW tokens
@@ -614,7 +656,8 @@ def fire_transition(transition: Transition, spn: SPN):
             return
 
         if len(transition.input_arcs) != 1:
-            raise RuntimeError(f"Fork transition {transition.label} expects exactly 1 input arc in this implementation.")
+            raise RuntimeError(
+                f"Fork transition {transition.label} expects exactly 1 input arc in this implementation.")
 
         iarc = transition.input_arcs[0]
 
@@ -645,21 +688,26 @@ def fire_transition(transition: Transition, spn: SPN):
                 oarc.to_place.n_tokens = len(oarc.to_place.tokens)
 
         remaining_cap -= 1
+        entities_processed += 1  # ADDED
 
     # --------------------------
     # 4) Normal: move consumed token(s) to outputs (same token identity)
     # --------------------------
     else:
         for iarc in transition.input_arcs:
-            for _ in range(iarc.multiplicity):
-                if remaining_cap <= 0:
+            # each "entity" here consumes iarc.multiplicity tokens
+            while remaining_cap > 0:
+                # if not enough tokens to consume multiplicity, stop
+                if len(iarc.from_place.tokens) < iarc.multiplicity:
                     break
-                if not iarc.from_place.tokens:
-                    raise RuntimeError(
-                        f"Transition {transition.label} fired but {iarc.from_place.label} lacks tokens."
-                    )
-                tok = iarc.from_place.tokens.pop(0)
+
+                consumed = []
+                for _ in range(iarc.multiplicity):
+                    consumed.append(iarc.from_place.tokens.pop(0))
+
                 iarc.from_place.n_tokens = len(iarc.from_place.tokens)
+
+                tok = consumed[0]  # entity token identity
 
                 for oarc in transition.output_arcs:
                     for __ in range(oarc.multiplicity):
@@ -668,7 +716,9 @@ def fire_transition(transition: Transition, spn: SPN):
 
                 tid = tok.id if hasattr(tok, "id") else tok
                 write_to_event_log(SIMULATION_TIME, tid, transition.label, transition, spn)
+
                 remaining_cap -= 1
+                entities_processed += 1  # ADDED
 
     # --------------------------
     # ---- KEEP YOUR MULTI-DIMENSION / DoT LOGIC BELOW (unchanged) ----
@@ -691,31 +741,22 @@ def fire_transition(transition: Transition, spn: SPN):
     # Handle dimension changes
     if transition.dimension_changes:
         for dimension, change_type, value in transition.dimension_changes:
-            if dimension in transition.dimension_table:
-                if change_type == "fixed":
-                    transition.dimension_table[dimension] += value
-                elif change_type == "rate":
-                    def fix_fraction2(x: float) -> float:
-                        m = math.floor(x)
-                        frac_hundred = math.floor((x - m) * 100)
-                        if frac_hundred >= 60:
-                            frac_hundred -= 60
-                        return m + frac_hundred / 100.0
-
-                    calculated_change = value * fix_fraction2(transition.firing_delay)
-                    transition.dimension_table[dimension] += calculated_change
-            else:
+            if dimension not in transition.dimension_table:
                 transition.dimension_table[dimension] = 0.0
-                if change_type == "fixed":
-                    transition.dimension_table[dimension] += value
-                elif change_type == "rate":
-                    def fix_fraction2(x: float) -> float:
-                        m = math.floor(x)
-                        frac_hundred = math.floor((x - m) * 100)
-                        if frac_hundred >= 60:
-                            frac_hundred -= 60
-                        return m + frac_hundred / 100.0
-                    transition.dimension_table[dimension] += value * fix_fraction2(transition.firing_delay)
+
+            if change_type == "fixed":
+                transition.dimension_table[dimension] += value
+
+            elif change_type == "rate":
+                def fix_fraction2(x: float) -> float:
+                    m = math.floor(x)
+                    frac_hundred = math.floor((x - m) * 100)
+                    if frac_hundred >= 60:
+                        frac_hundred -= 60
+                    return m + frac_hundred / 100.0
+
+                # ADDED: scale by how many entity-units were actually processed in this fire()
+                transition.dimension_table[dimension] += value * fix_fraction2(transition.firing_delay) * max(1, entities_processed)
 
     # Check if input places are DoT and calculate the duration
     for iarc in transition.input_arcs:
