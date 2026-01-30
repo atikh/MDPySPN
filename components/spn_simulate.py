@@ -1026,6 +1026,23 @@ def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, p
         row += [round(float(dimension_totals.get(d, 0.0)), 2) for d in dims_order]
 
         write_kpis_to_csv(row, path="../output/KPI/kpi.csv", header=header)
+        # -----------------------------
+        # NEW: KPIs per activity (each transition's dimension_table)
+        # -----------------------------
+        per_act_header = ["Time_Stamp"]
+        per_act_row = [round(SIMULATION_TIME, 2)]
+
+        for t in spn.transitions:
+            if hasattr(t, "dimension_table") and t.dimension_table:
+                for dim in sorted([d for d in t.dimension_table.keys() if d is not None]):
+                    per_act_header.append(f"{t.label}__{dim}")
+                    per_act_row.append(round(float(t.dimension_table.get(dim, 0.0) or 0.0), 2))
+
+        write_kpis_to_csv(
+            per_act_row,
+            path="../output/KPI/KPIs_per_activitiy.csv",
+            header=per_act_header
+        )
 
 
 def write_kpis_to_csv(data, path="../output/KPI/kpi.csv", header=None):
