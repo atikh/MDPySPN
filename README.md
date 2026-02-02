@@ -138,6 +138,13 @@ t1.set_memory_policy("AGE")
 ### Join  and Fork Transitions
 In our recent update, transitions with join and fork situation are automatically detected.
 
+### Parallel timing activities
+In many manufacturing systems, some resources don’t process tasks strictly one-by-one. A classic example is a conveyor belt (or continuous-flow machine): while one item is still being processed, the next item can enter the system before the first one finishes. That means several tasks (tokens) can be “in the same activity” at the same time. Regarding the other dimensional behaviors for parallel timing, the “rate” impacts are treated as machine busy time-> so with this we apply using incremental busy time, not full delay.
+
+To model this behavior in MDPySPN, we added a feature called parallel timing:
+```bash
+t1 = Transition(label="Transition_1", t_type="T", parallel_timing=True)
+```
 ## Export & Import of SPNs
 
 Export and import SPNs as [pickle](https://docs.python.org/3/library/pickle.html) files using the `export_spn()` and `import_spn()` functions of `spn_io` module.
