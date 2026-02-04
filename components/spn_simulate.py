@@ -1003,46 +1003,54 @@ def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, p
         header = ["Time_Stamp"]
         row = [round(SIMULATION_TIME, 2)]
 
-        # Only calculate/write these 3 if we have ANY input/output transitions
-        if has_input or has_output:
-            if has_input:
-                Inputt = sum(float(getattr(t, "input_value", 0) or 0) for t in input_transitions)
-                header.append("Inputs")
-                row.append(round(Inputt, 2))
+       # Only calculate/write Inputs/Outputs if at least one exists
+if has_input or has_output:
+    # transitions that actually have input/output values
+    input_transitions = [t for t in spn.transitions if hasattr(t, "input_value")]
+    output_transitions = [t for t in spn.transitions if hasattr(t, "output_value")]
 
-            if has_output:
-                Ouputt = sum(float(getattr(t, "output_value", 0) or 0) for t in output_transitions)
-                header.append("Outputs")
-                row.append(round(Ouputt, 2))
+    # stable order (so header doesn’t jump around between runs)
+    input_transitions = sorted(input_transitions, key=lambda t: t.label)
+    output_transitions = sorted(output_transitions, key=lambda t: t.label)
 
-            # Throughput only if both exist and Inputs != 0
-            if has_input and has_output:
-                Throughputt = (Ouputt / Inputt) if Inputt != 0 else 0.0
-                header.append("Throughput")
-                row.append(round(Throughputt, 2))
+    header = ["Time_Stamp"]
+    row = [round(SIMULATION_TIME, 2)]
 
-        # Always write dimensions
-        header += dims_order
-        row += [round(float(dimension_totals.get(d, 0.0)), 2) for d in dims_order]
+    # ---- NEW: one column per input transition ----
+    for t in input_transitions:
+        header.append(f"Input__{t.label}")
+        row.append(round(float(getattr(t, "input_value", 0) or 0), 2))
 
-        write_kpis_to_csv(row, path="../output/KPI/kpi.csv", header=header)
-        # -----------------------------
-        # NEW: KPIs per activity (each transition's dimension_table)
-        # -----------------------------
-        per_act_header = ["Time_Stamp"]
-        per_act_row = [round(SIMULATION_TIME, 2)]
+    # ---- NEW: one column per output transition ----
+    for t in output_transitions:
+        header.append(f"Output__{t.label}")
+        row.append(round(float(getattr(t, "output_value", 0) or 0), 2))
 
-        for t in spn.transitions:
-            if hasattr(t, "dimension_table") and t.dimension_table:
-                for dim in sorted([d for d in t.dimension_table.keys() if d is not None]):
-                    per_act_header.append(f"{t.label}__{dim}")
-                    per_act_row.append(round(float(t.dimension_table.get(dim, 0.0) or 0.0), 2))
+    # ---- NO THROUGHPUT ANYMORE ----
 
-        write_kpis_to_csv(
-            per_act_row,
-            path="../output/KPI/KPIs_per_activitiy.csv",
-            header=per_act_header
-        )
+    # Always write dimensions
+    header += dims_order
+    row += [round(float(dimension_totals.get(d, 0.0)), 2) for d in dims_order]
+
+    write_kpis_to_csv(row, path="../output/KPI/kpi.csv", header=header)
+
+    # -----------------------------
+    # KPIs per activity (unchanged)
+    # -----------------------------
+    per_act_header = ["Time_Stamp"]
+    per_act_row = [round(SIMULATION_TIME, 2)]
+
+    for t in spn.transitions:
+        if hasattr(t, "dimension_table") and t.dimension_table:
+            for dim in sorted([d for d in t.dimension_table.keys() if d is not None]):
+                per_act_header.append(f"{t.label}__{dim}")
+                per_act_row.append(round(float(t.dimension_table.get(dim, 0.0) or 0.0), 2))
+
+    write_kpis_to_csv(
+        per_act_row,
+        path="../output/KPI/KPIs_per_activitiy.csv",
+        header=per_act_header
+    )
 
 
 def write_kpis_to_csv(data, path="../output/KPI/kpi.csv", header=None):
