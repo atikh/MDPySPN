@@ -749,7 +749,7 @@ def fire_transition(transition: Transition, spn: SPN):
 
             elif change_type == "rate":
                 # ADDED: scale by how many entity-units were actually processed in this fire()
-                transition.dimension_table[dimension] += value * transition.firing_delay 
+                transition.dimension_table[dimension] += value * transition.firing_delay
 
     # Check if input places are DoT and calculate the duration
     for iarc in transition.input_arcs:
@@ -866,6 +866,57 @@ def process_next_event(spn: SPN, max_time):
     found_enabled = update_enabled_flag(spn)
     return found_enabled
 
+def finalize_parallel_inprocess_rate_impacts(spn: SPN, end_time: float):
+    """
+    At simulation end, account for the *already consumed* part of rate-impacts
+    for parallel_timing transitions whose next (front) instance did NOT fire yet.
+
+    We only count the *front* processing token (the one whose effective-busy interval
+    currently covers end_time). This avoids counting queued/behind tokens.
+    """
+    for transition in spn.transitions:
+        if not getattr(transition, "parallel_timing", False):
+            continue
+        if getattr(transition, "t_type", None) != "T":
+            continue
+        if not getattr(transition, "dimension_changes", None):
+            continue
+
+        instances = getattr(transition, "pt_instances", None)
+        if not instances:
+            continue
+
+        # Find the "front" instance: the one whose effective-busy interval [end-eff, end]
+        # contains end_time. (Only one should match.)
+        front_inst = None
+        front_start = float("-inf")
+        front_end = None
+
+        for inst in instances:
+            inst_end = float(inst.get("fire_time", 0.0))
+            # eff_time is your “non-overlapping busy time” for this instance
+            eff = float(inst.get("eff_time", inst.get("busy_time", inst.get("delay", 0.0))))
+            inst_start = inst_end - eff
+
+            if inst_start < end_time < inst_end and inst_start > front_start:
+                front_inst = inst
+                front_start = inst_start
+                front_end = inst_end
+
+        if front_inst is None:
+            continue
+
+        partial_eff_time = max(0.0, min(end_time, front_end) - front_start)
+        if partial_eff_time <= 0.0:
+            continue
+
+        # Add partial rate impacts for ALL rate-type dimension changes
+        for dimension, change_type, value in transition.dimension_changes:
+            if change_type != "rate":
+                continue
+            if dimension not in transition.dimension_table:
+                transition.dimension_table[dimension] = 0.0
+            transition.dimension_table[dimension] += float(value) * partial_eff_time
 
 
 def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, protocol=True, event_log=True,
@@ -886,27 +937,19 @@ def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, p
     PROTOCOL = protocol
 
     if protocol == True:
-        try:
-            path = os.path.join(os.getcwd(), "../output/protocols/protocol.csv")
-            with open(path, "w", newline="") as protocol:
-                writer = csv.writer(protocol)
-                writer.writerow(["Place", "Time", "Marking"])
-        except:
-            with open(os.getcwd() + "../output/protocols/protocol.csv", "w", newline="") as protocol:
-                writer = csv.writer(protocol)
-                writer.writerow(["Place", "Time", "Marking"])
+        path = os.path.join(os.getcwd(), "../output/protocols/protocol.csv")
+        with open(path, "w", newline="") as protocol:
+            writer = csv.writer(protocol)
+            writer.writerow(["Place", "Time", "Marking"])
 
     if event_log == True:
-        try:
-            path = os.path.join(os.getcwd(), "../output/event_logs/event_log.csv")
-            dimension_headers = [f"{dim.capitalize()} _Stamp" for dim in Dimensions if dim != "time"]
-            headers = ["Time_Stamp", "ID"] + dimension_headers + ["Event"]
+        path = os.path.join(os.getcwd(), "../output/event_logs/event_log.csv")
+        dimension_headers = [f"{dim.capitalize()} _Stamp" for dim in Dimensions if dim != "time"]
+        headers = ["Time_Stamp", "ID"] + dimension_headers + ["Event"]
 
-            with open(path, "w", newline="") as event_log:
-                writer = csv.writer(event_log)
-                writer.writerow(headers)
-        except Exception as e:
-            print(f"Error initializing event log file: {e}")
+        with open(path, "w", newline="") as event_log:
+            writer = csv.writer(event_log)
+            writer.writerow(headers)
 
     initial_marking = get_initial_marking(spn)
     reset_state(spn, initial_marking)
@@ -957,6 +1000,7 @@ def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, p
             print(f"Input value for {transition.label}: {transition.input_value}")
         if hasattr(transition, 'output_value'):
             print(f"Output value for {transition.label}: {transition.output_value}")
+    finalize_parallel_inprocess_rate_impacts(spn, SIMULATION_TIME)
     dimension_totals = {}
 
     # Sum dimensions from transitions
@@ -1003,55 +1047,55 @@ def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, p
         header = ["Time_Stamp"]
         row = [round(SIMULATION_TIME, 2)]
 
-       # Only calculate/write Inputs/Outputs if at least one exists
-if has_input or has_output:
-    # transitions that actually have input/output values
-    input_transitions = [t for t in spn.transitions if hasattr(t, "input_value")]
-    output_transitions = [t for t in spn.transitions if hasattr(t, "output_value")]
+        # Only calculate/write these 3 if we have ANY input/output transitions
+        # Only calculate/write Inputs/Outputs if at least one exists
+        if has_input or has_output:
+            # transitions that actually have input/output values
+            input_transitions = [t for t in spn.transitions if hasattr(t, "input_value")]
+            output_transitions = [t for t in spn.transitions if hasattr(t, "output_value")]
 
-    # stable order (so header doesn’t jump around between runs)
-    input_transitions = sorted(input_transitions, key=lambda t: t.label)
-    output_transitions = sorted(output_transitions, key=lambda t: t.label)
+            # stable order (so header doesn’t jump around between runs)
+            input_transitions = sorted(input_transitions, key=lambda t: t.label)
+            output_transitions = sorted(output_transitions, key=lambda t: t.label)
 
-    header = ["Time_Stamp"]
-    row = [round(SIMULATION_TIME, 2)]
+            header = ["Time_Stamp"]
+            row = [round(SIMULATION_TIME, 2)]
 
-    # ---- NEW: one column per input transition ----
-    for t in input_transitions:
-        header.append(f"Input__{t.label}")
-        row.append(round(float(getattr(t, "input_value", 0) or 0), 2))
+            # ---- NEW: one column per input transition ----
+            for t in input_transitions:
+                header.append(f"Input__{t.label}")
+                row.append(round(float(getattr(t, "input_value", 0) or 0), 2))
 
-    # ---- NEW: one column per output transition ----
-    for t in output_transitions:
-        header.append(f"Output__{t.label}")
-        row.append(round(float(getattr(t, "output_value", 0) or 0), 2))
+            # ---- NEW: one column per output transition ----
+            for t in output_transitions:
+                header.append(f"Output__{t.label}")
+                row.append(round(float(getattr(t, "output_value", 0) or 0), 2))
 
-    # ---- NO THROUGHPUT ANYMORE ----
+            # ---- NO THROUGHPUT ANYMORE ----
 
-    # Always write dimensions
-    header += dims_order
-    row += [round(float(dimension_totals.get(d, 0.0)), 2) for d in dims_order]
+            # Always write dimensions
+            header += dims_order
+            row += [round(float(dimension_totals.get(d, 0.0)), 2) for d in dims_order]
 
-    write_kpis_to_csv(row, path="../output/KPI/kpi.csv", header=header)
+            write_kpis_to_csv(row, path="../output/KPI/kpi.csv", header=header)
 
-    # -----------------------------
-    # KPIs per activity (unchanged)
-    # -----------------------------
-    per_act_header = ["Time_Stamp"]
-    per_act_row = [round(SIMULATION_TIME, 2)]
+            # -----------------------------
+            # KPIs per activity (unchanged)
+            # -----------------------------
+            per_act_header = ["Time_Stamp"]
+            per_act_row = [round(SIMULATION_TIME, 2)]
 
-    for t in spn.transitions:
-        if hasattr(t, "dimension_table") and t.dimension_table:
-            for dim in sorted([d for d in t.dimension_table.keys() if d is not None]):
-                per_act_header.append(f"{t.label}__{dim}")
-                per_act_row.append(round(float(t.dimension_table.get(dim, 0.0) or 0.0), 2))
+            for t in spn.transitions:
+                if hasattr(t, "dimension_table") and t.dimension_table:
+                    for dim in sorted([d for d in t.dimension_table.keys() if d is not None]):
+                        per_act_header.append(f"{t.label}__{dim}")
+                        per_act_row.append(round(float(t.dimension_table.get(dim, 0.0) or 0.0), 2))
 
-    write_kpis_to_csv(
-        per_act_row,
-        path="../output/KPI/KPIs_per_activitiy.csv",
-        header=per_act_header
-    )
-
+            write_kpis_to_csv(
+                per_act_row,
+                path="../output/KPI/KPIs_per_activitiy.csv",
+                header=per_act_header
+            )
 
 def write_kpis_to_csv(data, path="../output/KPI/kpi.csv", header=None):
     import csv
