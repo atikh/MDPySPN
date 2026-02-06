@@ -125,6 +125,15 @@ def reset_state(spn: SPN, marking):
         place.n_tokens = 0             # keep counter consistent
         place.max_tokens = 0 if hasattr(place, "max_tokens") else getattr(place, "max_tokens", 0)
 
+        # Reset DoT FULL-idle tracking fields (used only by the end-of-simulation
+        # idle-rate accounting for immediate transitions).
+        for attr in ("dot_full_marking", "dot_full_active", "dot_full_start"):
+            if hasattr(place, attr):
+                try:
+                    delattr(place, attr)
+                except Exception:
+                    setattr(place, attr, None)
+
         place.time_changed = 0.0
         place.total_tokens = 0.0
         place.time_non_empty = 0.0
@@ -334,18 +343,23 @@ def start_parallel_instances(transition: Transition):
         # Reserve tokens NOW (so they cannot be taken by other transitions).
         reserved = []
         for _ in range(iarc.multiplicity):
+            # DoT FULL tracking (no side effects besides timestamps)
+            dot_full_on_remove(iarc.from_place)
             reserved.append(iarc.from_place.tokens.pop(0))
 
         delay = sample_firing_delay(transition)
         finish_time = SIMULATION_TIME + delay
         base = max(getattr(transition, "pt_busy_until", SIMULATION_TIME), SIMULATION_TIME)
         busy_time = max(0.0, finish_time - base)
-        transition.pt_busy_until = max(base, finish_time)
+        busy_end = max(base, finish_time)
+        transition.pt_busy_until = busy_end
 
         transition.pt_instances.append({
             "fire_time": finish_time,
             "delay": delay,
             "busy_time": busy_time,
+            "busy_start": base,
+            "busy_end": busy_end,
             "tokens": reserved,
         })
 
@@ -383,6 +397,7 @@ def fire_parallel_instance(transition: Transition, spn: SPN, instance: dict):
                             produced = Token()
 
                         oarc.to_place.tokens.append(produced)
+                        dot_full_on_add(oarc.to_place)
                         oarc.to_place.n_tokens = len(oarc.to_place.tokens)
                         write_to_event_log(SIMULATION_TIME, produced.id, transition.label, transition, spn)
 
@@ -391,6 +406,7 @@ def fire_parallel_instance(transition: Transition, spn: SPN, instance: dict):
                 for tok in tokens:
                     for oarc in transition.output_arcs:
                         oarc.to_place.tokens.append(tok)
+                        dot_full_on_add(oarc.to_place)
                         oarc.to_place.n_tokens = len(oarc.to_place.tokens)
                     write_to_event_log(SIMULATION_TIME, tok.id, transition.label, transition, spn)
 
@@ -467,38 +483,29 @@ def dot_full_init(place: Place):
     """
     if getattr(place, "DoT", 0) != 1:
         return
-    if getattr(place, "dimension_tracked", None) is None:
-        return
-
-    # store initial marking once
-    if not hasattr(place, "dot_full_marking"):
-        place.dot_full_marking = len(place.tokens)
+    # Store the initial "full" marking.
+    # We intentionally reset it here so each simulation run uses the
+    # current initial marking after reset_state(...).
+    place.dot_full_marking = len(place.tokens)
 
     place.dot_full_active = (len(place.tokens) == place.dot_full_marking and place.dot_full_marking > 0)
     place.dot_full_start = SIMULATION_TIME if place.dot_full_active else None
 
 
-def dot_full_on_remove(place: Place, transition: Transition):
+def dot_full_on_remove(place: Place):
     """
     Call this RIGHT BEFORE removing a token from `place`.
-    If the place is FULL, we close the FULL interval and add its duration to transition.dimension_table[dimension_tracked].
+    We only maintain timestamps/flags; no KPIs are updated here.
     """
     if getattr(place, "DoT", 0) != 1:
         return
-    dim = getattr(place, "dimension_tracked", None)
-    if dim is None:
-        return
     if not hasattr(place, "dot_full_marking"):
         place.dot_full_marking = len(place.tokens)
+    if place.dot_full_marking <= 0:
+        return
 
     # leaving FULL state now?
     if getattr(place, "dot_full_active", False) and len(place.tokens) == place.dot_full_marking:
-        start = getattr(place, "dot_full_start", None)
-        if start is not None:
-            dur = SIMULATION_TIME - start
-            if dur > 0:
-                transition.dimension_table[dim] = transition.dimension_table.get(dim, 0.0) + dur
-
         place.dot_full_active = False
         place.dot_full_start = None
 
@@ -510,8 +517,6 @@ def dot_full_on_add(place: Place):
     """
     if getattr(place, "DoT", 0) != 1:
         return
-    if getattr(place, "dimension_tracked", None) is None:
-        return
     if not hasattr(place, "dot_full_marking"):
         place.dot_full_marking = len(place.tokens)
 
@@ -519,6 +524,28 @@ def dot_full_on_add(place: Place):
     if (not getattr(place, "dot_full_active", False)) and len(place.tokens) == place.dot_full_marking and place.dot_full_marking > 0:
         place.dot_full_active = True
         place.dot_full_start = SIMULATION_TIME
+
+
+def maybe_capture_dot_full_leave(place: Place, captured: dict):
+    """For IMMEDIATE transitions: capture the duration of the *FULL* interval
+    that ends now because we're about to remove a token from a FULL DoT place.
+
+    This fixes multi-token DoT places where the old entrance_time logic treated
+    any token removal as ending the idle interval.
+    """
+    if getattr(place, "DoT", 0) != 1:
+        return
+    if place in captured:
+        return
+    if not hasattr(place, "dot_full_marking"):
+        return
+    if not getattr(place, "dot_full_active", False):
+        return
+    if getattr(place, "dot_full_start", None) is None:
+        return
+    # Only if we are currently FULL (right before removal)
+    if len(place.tokens) == getattr(place, "dot_full_marking", -1):
+        captured[place] = float(SIMULATION_TIME) - float(place.dot_full_start)
 
 
 def fire_transition(transition: Transition, spn: SPN):
@@ -532,6 +559,12 @@ def fire_transition(transition: Transition, spn: SPN):
           * all additional produced output tokens are NEW tokens
     """
     global tracking_places
+
+    # For IMMEDIATE transitions with DoT places that hold multiple tokens, we need
+    # to measure the time the DoT place was *FULL* (all initial tokens present)
+    # before it leaves FULL due to this firing. We capture that duration right
+    # before consuming tokens, and apply it once per DoT place.
+    full_leave_durations = {}
     for iarc in transition.input_arcs:
         iarc.from_place.n_tokens = len(iarc.from_place.tokens)
     for oarc in transition.output_arcs:
@@ -562,6 +595,7 @@ def fire_transition(transition: Transition, spn: SPN):
                     break
                 t = Token()
                 oarc.to_place.tokens.append(t)
+                dot_full_on_add(oarc.to_place)
                 oarc.to_place.n_tokens = len(oarc.to_place.tokens)
                 write_to_event_log(SIMULATION_TIME, t.id, transition.label, transition, spn)
                 remaining_cap -= 1
@@ -624,6 +658,9 @@ def fire_transition(transition: Transition, spn: SPN):
                     raise RuntimeError(
                         f"Join transition {transition.label} fired but {iarc.from_place.label} lacks tokens."
                     )
+                if transition.t_type == "I":
+                    maybe_capture_dot_full_leave(iarc.from_place, full_leave_durations)
+                dot_full_on_remove(iarc.from_place)
                 tok = iarc.from_place.tokens.pop(0)
                 collected.append((iarc.from_place, tok))
             iarc.from_place.n_tokens = len(iarc.from_place.tokens)
@@ -639,6 +676,7 @@ def fire_transition(transition: Transition, spn: SPN):
         for oarc in transition.output_arcs:
             for _ in range(oarc.multiplicity):
                 oarc.to_place.tokens.append(new_tok)
+                dot_full_on_add(oarc.to_place)
                 oarc.to_place.n_tokens = len(oarc.to_place.tokens)
 
         nid = new_tok.id if hasattr(new_tok, "id") else new_tok
@@ -668,6 +706,9 @@ def fire_transition(transition: Transition, spn: SPN):
                 raise RuntimeError(
                     f"Fork transition {transition.label} fired but {iarc.from_place.label} lacks tokens."
                 )
+            if transition.t_type == "I":
+                maybe_capture_dot_full_leave(iarc.from_place, full_leave_durations)
+            dot_full_on_remove(iarc.from_place)
             consumed.append(iarc.from_place.tokens.pop(0))
         iarc.from_place.n_tokens = len(iarc.from_place.tokens)
 
@@ -678,11 +719,13 @@ def fire_transition(transition: Transition, spn: SPN):
             for _ in range(oarc.multiplicity):
                 if not used_entity:
                     oarc.to_place.tokens.append(entity_token)
+                    dot_full_on_add(oarc.to_place)
                     write_to_event_log(SIMULATION_TIME, entity_token.id, transition.label, transition, spn)
                     used_entity = True
                 else:
                     t = Token()
                     oarc.to_place.tokens.append(t)
+                    dot_full_on_add(oarc.to_place)
                     write_to_event_log(SIMULATION_TIME, t.id, transition.label, transition, spn)
 
                 oarc.to_place.n_tokens = len(oarc.to_place.tokens)
@@ -703,6 +746,9 @@ def fire_transition(transition: Transition, spn: SPN):
 
                 consumed = []
                 for _ in range(iarc.multiplicity):
+                    if transition.t_type == "I":
+                        maybe_capture_dot_full_leave(iarc.from_place, full_leave_durations)
+                    dot_full_on_remove(iarc.from_place)
                     consumed.append(iarc.from_place.tokens.pop(0))
 
                 iarc.from_place.n_tokens = len(iarc.from_place.tokens)
@@ -712,6 +758,7 @@ def fire_transition(transition: Transition, spn: SPN):
                 for oarc in transition.output_arcs:
                     for __ in range(oarc.multiplicity):
                         oarc.to_place.tokens.append(tok)
+                        dot_full_on_add(oarc.to_place)
                         oarc.to_place.n_tokens = len(oarc.to_place.tokens)
 
                 tid = tok.id if hasattr(tok, "id") else tok
@@ -752,20 +799,48 @@ def fire_transition(transition: Transition, spn: SPN):
                 transition.dimension_table[dimension] += value * transition.firing_delay
 
     # Check if input places are DoT and calculate the duration
-    for iarc in transition.input_arcs:
-        input_place = iarc.from_place
-        if input_place.DoT == 1:
-            tracking_entry = next((entry for entry in tracking_places if entry["place"] == input_place), None)
-            if tracking_entry:
-                duration = SIMULATION_TIME - tracking_entry["entrance_time"]
-                tracked_dimension = tracking_entry["dimension"]
+    #
+    # IMPORTANT FIX (multi-token DoT, IMMEDIATE transitions):
+    # Some "ready" DoT places hold multiple tokens (e.g., STR1_ready=10, STR2_ready=6,
+    # MPL03_ready=174 at the end of your run). In those cases, the correct "idle"
+    # interval is the time the DoT place was *FULL* (all initial tokens present) until
+    # the moment it stops being FULL (first token taken).
+    #
+    # The previous tracking_places-based logic effectively treated *any* token removal
+    # as ending the idle interval, which over/under-counts when >1 token exists.
+    #
+    # So for IMMEDIATE transitions where at least one DoT input place has an initial
+    # FULL marking >1, we use the FULL-leave duration captured earlier.
+    dot_inputs = [arc.from_place for arc in transition.input_arcs if getattr(arc.from_place, "DoT", 0) == 1]
+    use_full_idle_logic = (
+        transition.t_type == "I" and any(getattr(p, "dot_full_marking", 1) > 1 for p in dot_inputs)
+    )
 
-                for dimension, change_type, value in transition.dimension_changes:
-                    if dimension == tracked_dimension and change_type == "rate":
-                        if dimension in transition.dimension_table:
-                            transition.dimension_table[dimension] += duration * value
+    if use_full_idle_logic and transition.dimension_changes:
+        for p, duration in full_leave_durations.items():
+            tracked_dimension = getattr(p, "dimension_tracked", None)
+            if tracked_dimension is None:
+                continue
+            for dimension, change_type, value in transition.dimension_changes:
+                if dimension == tracked_dimension and change_type == "rate":
+                    if dimension not in transition.dimension_table:
+                        transition.dimension_table[dimension] = 0.0
+                    transition.dimension_table[dimension] += float(duration) * float(value)
+    else:
+        for iarc in transition.input_arcs:
+            input_place = iarc.from_place
+            if input_place.DoT == 1:
+                tracking_entry = next((entry for entry in tracking_places if entry["place"] == input_place), None)
+                if tracking_entry:
+                    duration = SIMULATION_TIME - tracking_entry["entrance_time"]
+                    tracked_dimension = tracking_entry["dimension"]
 
-                tracking_places.remove(tracking_entry)
+                    for dimension, change_type, value in transition.dimension_changes:
+                        if dimension == tracked_dimension and change_type == "rate":
+                            if dimension in transition.dimension_table:
+                                transition.dimension_table[dimension] += duration * value
+
+                    tracking_places.remove(tracking_entry)
 
     # Track again the entrance time and place details for DoT places
     for oarc in transition.output_arcs:
@@ -886,17 +961,41 @@ def finalize_parallel_inprocess_rate_impacts(spn: SPN, end_time: float):
         if not instances:
             continue
 
-        # Find the "front" instance: the one whose effective-busy interval [end-eff, end]
-        # contains end_time. (Only one should match.)
+        # Optional user-requested guard: only do this if there is at least
+        # one token logically waiting/being processed for this transition.
+        pending = sum(len(inst.get("tokens", [])) for inst in instances)
+        in_place = 0
+        if getattr(transition, "input_arcs", None):
+            try:
+                in_place = len(transition.input_arcs[0].from_place.tokens)
+            except Exception:
+                in_place = 0
+        if (pending + in_place) <= 0:
+            continue
+
+        # Find the "front" (in-service) instance: the one whose effective busy interval
+        # currently covers end_time. This avoids counting queued/behind tokens.
         front_inst = None
         front_start = float("-inf")
         front_end = None
 
         for inst in instances:
-            inst_end = float(inst.get("fire_time", 0.0))
             # eff_time is your “non-overlapping busy time” for this instance
             eff = float(inst.get("eff_time", inst.get("busy_time", inst.get("delay", 0.0))))
-            inst_start = inst_end - eff
+            if eff <= 0:
+                continue
+
+            # Prefer the queued-server timestamps we store at scheduling time.
+            inst_start = inst.get("busy_start", None)
+            inst_end = inst.get("busy_end", None)
+
+            # Backward compatible fallback for older instances
+            if inst_start is None or inst_end is None:
+                inst_end = float(inst.get("fire_time", 0.0))
+                inst_start = inst_end - eff
+
+            inst_start = float(inst_start)
+            inst_end = float(inst_end)
 
             if inst_start < end_time < inst_end and inst_start > front_start:
                 front_inst = inst
@@ -917,6 +1016,54 @@ def finalize_parallel_inprocess_rate_impacts(spn: SPN, end_time: float):
             if dimension not in transition.dimension_table:
                 transition.dimension_table[dimension] = 0.0
             transition.dimension_table[dimension] += float(value) * partial_eff_time
+
+
+def finalize_immediate_dot_full_rate_impacts(spn: SPN, end_time: float):
+    """At simulation end, add rate-impacts for IMMEDIATE transitions
+    based on how long their DoT input place(s) have been FULL.
+
+    User requirement:
+      - only at simulation end
+      - only for immediate transitions (t_type == 'I')
+      - only for dimension_changes of type 'rate'
+      - duration = time since the *last* moment all DoT input places became FULL
+    """
+
+    for transition in spn.transitions:
+        if getattr(transition, "t_type", None) != "I":
+            continue
+        if not getattr(transition, "dimension_changes", None):
+            continue
+        if not any(ct == "rate" for _, ct, _ in transition.dimension_changes):
+            continue
+
+        dot_places = [
+            arc.from_place
+            for arc in getattr(transition, "input_arcs", [])
+            if getattr(arc.from_place, "DoT", 0) == 1
+        ]
+        if not dot_places:
+            continue
+
+        # We consider the transition "FULL" only if ALL its DoT inputs are FULL.
+        if not all(getattr(p, "dot_full_active", False) for p in dot_places):
+            continue
+
+        starts = [getattr(p, "dot_full_start", None) for p in dot_places]
+        if any(s is None for s in starts):
+            continue
+
+        full_start = max(float(s) for s in starts)
+        dur = float(end_time) - full_start
+        if dur <= 0:
+            continue
+
+        for dimension, change_type, value in transition.dimension_changes:
+            if change_type != "rate":
+                continue
+            if dimension not in transition.dimension_table:
+                transition.dimension_table[dimension] = 0.0
+            transition.dimension_table[dimension] += float(value) * dur
 
 
 def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, protocol=True, event_log=True,
@@ -944,7 +1091,8 @@ def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, p
 
     if event_log == True:
         path = os.path.join(os.getcwd(), "../output/event_logs/event_log.csv")
-        dimension_headers = [f"{dim.capitalize()} _Stamp" for dim in Dimensions if dim != "time"]
+        dims_source = Dimensions if Dimensions is not None else getattr(spn, "dimensions", [])
+        dimension_headers = [f"{dim.capitalize()} _Stamp" for dim in dims_source if dim != "time"]
         headers = ["Time_Stamp", "ID"] + dimension_headers + ["Event"]
 
         with open(path, "w", newline="") as event_log:
@@ -967,10 +1115,13 @@ def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, p
     if VERBOSITY > 1:
         print_marking(spn, SIMULATION_TIME)
 
-    ok = update_enabled_flag(spn)
-
+    # IMPORTANT: initialize DoT FULL tracking BEFORE the first enabled-flag update.
+    # update_enabled_flag(...) can start parallel instances (which consumes tokens),
+    # and we must capture the true initial "FULL" marking before any consumption.
     for place in spn.places:
         dot_full_init(place)
+
+    ok = update_enabled_flag(spn)
 
     while SIMULATION_TIME < max_time and ok == True:
         ok = process_next_event(spn, max_time)
@@ -1001,6 +1152,7 @@ def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, p
         if hasattr(transition, 'output_value'):
             print(f"Output value for {transition.label}: {transition.output_value}")
     finalize_parallel_inprocess_rate_impacts(spn, SIMULATION_TIME)
+    finalize_immediate_dot_full_rate_impacts(spn, SIMULATION_TIME)
     dimension_totals = {}
 
     # Sum dimensions from transitions
