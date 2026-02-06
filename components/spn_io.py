@@ -146,6 +146,9 @@ def write_to_event_log(simulation_time, token_ids, event, transition, spn):
 
         # Ensure the file exists and write the header dynamically if it's empty
         write_header = not os.path.exists(file_path) or os.stat(file_path).st_size == 0
+        if write_header:
+            header = ["Time_Stamp", "ID"] + list(dimension_totals.keys()) + ["Event"]
+            writer.writerow(header)
 
         with open(file_path, "a", newline="") as event_log:
             writer = csv.writer(event_log)
