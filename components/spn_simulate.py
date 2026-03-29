@@ -878,7 +878,7 @@ def fire_transition(transition: Transition, spn: SPN):
 
     # Track the entrance time and place details for DoT places
     for oarc in transition.output_arcs:
-        if oarc.to_place.DoT == 1:
+        if oarc.to_place.DoT == 1 and transition.t_type == "I":
             for iarc in transition.input_arcs:
                 dimension = iarc.from_place.dimension_tracked
                 duration = SIMULATION_TIME - iarc.from_place.time_entered
