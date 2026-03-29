@@ -154,7 +154,11 @@ def reset_state(spn: SPN, marking):
         transition.clock_active = False
         transition.enabled = False
 
-        # Clear any pending per-token timers
+        # add this
+        if hasattr(transition, "dimension_table"):
+            for dim in list(transition.dimension_table.keys()):
+                transition.dimension_table[dim] = 0.0
+
         if hasattr(transition, "pt_instances"):
             transition.pt_instances = []
             transition.pt_busy_until = 0.0
