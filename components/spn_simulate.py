@@ -967,7 +967,7 @@ def fire_transition(transition: Transition, spn: SPN):
                     if dimension not in transition.dimension_table:
                         transition.dimension_table[dimension] = 0.0
                     transition.dimension_table[dimension] += float(duration) * float(value)
-    else:
+    elif transition.t_type == "I":
         for iarc in transition.input_arcs:
             input_place = iarc.from_place
             if input_place.DoT == 1:
