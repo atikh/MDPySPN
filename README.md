@@ -25,8 +25,42 @@ We define the dimensions in interest and return the same as the following exampl
 Total_Dimensions = ['time', 'energy', 'waste']
 ```
 The "time" dimension must always be listed first in the Total_Dimensions (the name is not case-sensitive). 
+### Hierarchical Dimension Extension
+
+MDPySPN has been extended to support hierarchical dimensions. In the original structure, all dimensions are listed as main dimensions in `Total_Dimensions`, such as `time`, `energy`, and `waste`. In the extended structure, a main dimension can also act as a parent dimension that groups executable subdimensions.
+
+For example, a model may include main dimensions such as:
+
+```bash
+Total_Dimensions = ['Time', 'Grid', 'Battery']
+```
+and subdimensions such as:
+```python
+Subdimensions = {
+    'Battery': ['Battery.AGV1', 'Battery.AGV2']
+}
+```
+In this example, Time and Grid are directly executable main dimensions, while Battery is a parent dimension. The executable battery values are stored and updated through Battery.AGV1 and Battery.AGV2. This structure is useful when a dimension must be tracked at the level of a specific asset, resource, source, or category.
+
+```markdown
+Dimension changes can also be assigned to subdimensions. For example, a transport transition can update the battery state of a specific AGV:
+
+```bash
+t6 = Transition("AGV1 Transport", "T")
+t6.set_distribution("triang", a=0.52, b=3.98, c=2.02)
+t6.add_dimension_change("Battery.AGV1", "rate", -0.25)
+```
+A transition may also affect both a main dimension and a subdimension. For example, a charging transition can increase the battery state of one AGV while consuming grid energy:
+```bash
+t14 = Transition("Charging AGV1", "T")
+t14.set_distribution("charging", r=1.5, max_charging=100.0, battery_dim="Battery.AGV1")
+t14.add_dimension_change("Battery.AGV1", "rate", 1.5)
+t14.add_dimension_change("Grid", "rate", 0.167)
+```
+The `charging` distribution is used for battery-oriented models. It computes the charging delay from the current value of the selected battery subdimension, the charging rate `r`, and the target or maximum charging level `max_charging`.
 
 
+------------------------------------
 Formally, the class of SPNs that can be modeled using *PySPN* is defined as:
 
 $$SPN = (P, T, A, G, m_0)$$
