@@ -212,8 +212,12 @@ The output can be defined as a visualization in the form of an MDSPN diagram, an
 ```bash
 draw_spn(spn, show=True)
 ```
-Sample multidimensional SPN graph:
+Sample MDSPN graph:
 ![image](https://github.com/user-attachments/assets/5896cc0c-2ce2-422b-a00d-c69fca909c36)
+
+
+Sample hierarchical SPN graph:
+<img width="607" height="703" alt="image" src="https://github.com/user-attachments/assets/2e537cee-fe26-44a8-9669-72ce1c3447e1" />
 
 
 At the end of the simulation run, if the **show** option is enabled, a **PDF file** will be generated containing a detailed visualization of the final state of the simulation. This graph includes key performance indicators (**KPIs**) such as **input/output statistics** and the **final A
