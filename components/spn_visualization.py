@@ -165,13 +165,29 @@ def draw_spn(spn, file="spn_default", show=True, print_place_labels=False, rankd
                 fixedsize='true'
             )
 
-        # Dimension table node (unchanged)
+        # Dimension table node
+        # Build rows first. Graphviz cannot render an empty HTML table such as
+        # <<table border='1' cellborder='1' cellspacing='0'></table>>.
+        table_rows = []
         if transition.dimension_table:
-            table_label = f"""<<table border='1' cellborder='1' cellspacing='0'>"""
             for dimension, value in transition.dimension_table.items():
-                if dimension is not None:
-                    table_label += f"<tr><td>{dimension}</td><td>{value:.2f}</td></tr>"
-            table_label += "</table>>"
+                if dimension is None:
+                    continue
+                try:
+                    value_text = f"{float(value):.2f}"
+                except (TypeError, ValueError):
+                    value_text = str(value)
+
+                table_rows.append(
+                    f"<tr><td>{dimension}</td><td>{value_text}</td></tr>"
+                )
+
+        if table_rows:
+            table_label = (
+                    "<<table border='1' cellborder='1' cellspacing='0'>"
+                    + "".join(table_rows)
+                    + "</table>>"
+            )
 
             table_node_label = f"{transition.label}_table"
             spacer_node_label = f"{transition.label}_spacer"
