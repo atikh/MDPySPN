@@ -695,6 +695,7 @@ def fire_transition(transition: Transition, spn: SPN):
           * all additional produced output tokens are NEW tokens
     """
     global tracking_places
+    import math
 
     # For IMMEDIATE transitions with DoT places that hold multiple tokens, we need
     # to measure the time the DoT place was *FULL* (all initial tokens present)
