@@ -342,16 +342,37 @@ def _is_asset_level(transition: Transition) -> bool:
     return bool(getattr(transition, "asset_level", False))
 
 
+def _has_batch_multiplicity(transition: Transition) -> bool:
+    """
+    True when one transition firing moves multiple product tokens
+    using arc multiplicity. This is batch behavior, not parallel timing.
+    """
+    if getattr(transition, "parallel_timing", False):
+        return False
+
+    if _is_asset_level(transition):
+        return False
+
+    arcs = list(getattr(transition, "input_arcs", [])) + list(getattr(transition, "output_arcs", []))
+
+    return any(
+        int(getattr(arc, "multiplicity", 1) or 1) > 1
+        for arc in arcs
+    )
+
+
 def _impact_units(transition: Transition, default_units: float = 1.0) -> float:
     """
-    Normal transitions: impact scales by processed tokens.
-    Asset-level transitions: impact is counted once.
+    Asset-level transitions and batch-multiplicity transitions count energy once.
+    Normal transitions scale by processed tokens.
     """
     if _is_asset_level(transition):
         return 1.0
 
-    return float(default_units)
+    if _has_batch_multiplicity(transition):
+        return 1.0
 
+    return float(default_units)
 
 def _logical_fire_capacity(transition: Transition):
     """
@@ -1282,54 +1303,136 @@ def finalize_parallel_inprocess_rate_impacts(spn: SPN, end_time: float):
                 * _impact_units(transition, max(1, len(front_inst.get("tokens", []))))
             )
 
+def finalize_enabled_timed_rate_impacts(spn: SPN, end_time: float):
+    """
+    At simulation end, account for partially elapsed regular timed transitions.
+
+    If the simulation stops before an enabled timed transition fires, add only
+    the already elapsed rate-based impact:
+
+        impact = rate * elapsed_time
+
+    not the full transition delay.
+    """
+
+    for transition in spn.transitions:
+        if getattr(transition, "t_type", None) != "T":
+            continue
+
+        if getattr(transition, "parallel_timing", False):
+            continue
+
+        if not getattr(transition, "enabled", False):
+            continue
+
+        if not getattr(transition, "dimension_changes", None):
+            continue
+
+        if not any(change_type == "rate" for _, change_type, _ in transition.dimension_changes):
+            continue
+
+        enabled_at = float(getattr(transition, "enabled_at", end_time) or 0.0)
+        firing_delay = float(getattr(transition, "firing_delay", 0.0) or 0.0)
+
+        if firing_delay <= 0:
+            continue
+
+        elapsed = max(0.0, float(end_time) - enabled_at)
+
+        # Important: only elapsed time, never more than the sampled delay
+        elapsed = min(elapsed, firing_delay)
+
+        if elapsed <= 0.0:
+            continue
+
+        units = _impact_units(transition, 1.0)
+
+        for dimension, change_type, value in transition.dimension_changes:
+            if change_type != "rate":
+                continue
+
+            if dimension not in transition.dimension_table:
+                transition.dimension_table[dimension] = 0.0
+
+            transition.dimension_table[dimension] += float(value) * elapsed * units
 
 def finalize_immediate_dot_full_rate_impacts(spn: SPN, end_time: float):
-    """At simulation end, add rate-impacts for IMMEDIATE transitions
-    based on how long their DoT input place(s) have been FULL.
+    """
+    At simulation end, add idle-rate impact for immediate asset-ready transitions.
 
-    User requirement:
-      - only at simulation end
-      - only for immediate transitions (t_type == 'I')
-      - only for dimension_changes of type 'rate'
-      - duration = time since the *last* moment all DoT input places became FULL
+    Example:
+        NIR Eqpt_idle still has a token at the end.
+        The waiting time from the last idle entry until simulation end
+        must be added to NIR Eqpt_ready__Grid.
     """
 
     for transition in spn.transitions:
         if getattr(transition, "t_type", None) != "I":
             continue
+
         if not getattr(transition, "dimension_changes", None):
             continue
-        if not any(ct == "rate" for _, ct, _ in transition.dimension_changes):
+
+        if not any(change_type == "rate" for _, change_type, _ in transition.dimension_changes):
             continue
 
-        dot_places = [
+
+        dot_inputs = [
             arc.from_place
             for arc in getattr(transition, "input_arcs", [])
             if getattr(arc.from_place, "DoT", 0) == 1
         ]
-        if not dot_places:
+
+        if not dot_inputs:
             continue
 
-        # We consider the transition "FULL" only if ALL its DoT inputs are FULL.
-        if not all(getattr(p, "dot_full_active", False) for p in dot_places):
+        # We calculate only for idle places that still contain tokens at the end.
+        active_dot_inputs = [
+            p for p in dot_inputs
+            if len(getattr(p, "tokens", [])) > 0
+        ]
+
+        if not active_dot_inputs:
             continue
 
-        starts = [getattr(p, "dot_full_start", None) for p in dot_places]
-        if any(s is None for s in starts):
+        starts = []
+
+        for p in active_dot_inputs:
+            start = getattr(p, "dot_full_start", None)
+
+            # fallback to tracking_places if dot_full_start is not available
+            if start is None:
+                tracking_entry = next(
+                    (entry for entry in tracking_places if entry["place"] == p),
+                    None
+                )
+                if tracking_entry:
+                    start = tracking_entry.get("entrance_time", None)
+
+            if start is not None:
+                starts.append(float(start))
+
+        if not starts:
             continue
 
-        full_start = max(float(s) for s in starts)
-        dur = float(end_time) - full_start
-        if dur <= 0:
+        idle_start = max(starts)
+        duration = float(end_time) - idle_start
+
+        if duration <= 0:
             continue
 
         for dimension, change_type, value in transition.dimension_changes:
             if change_type != "rate":
                 continue
+
             if dimension not in transition.dimension_table:
                 transition.dimension_table[dimension] = 0.0
-            transition.dimension_table[dimension] += float(value) * dur * _impact_units(transition, 1.0)
 
+            transition.dimension_table[dimension] += (
+                float(value)
+                * duration
+                * _impact_units(transition, 1.0)
+            )
 
 def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, protocol=True, event_log=True,
              Dimensions=None):
@@ -1405,11 +1508,43 @@ def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, p
         print_statistics(spn, SIMULATION_TIME)
 
     # Calculate input and output values for transitions
+    def _transition_input_product_multiplier(transition: Transition) -> int:
+        """
+        For input KPI:
+        if the input transition consumes tokens with multiplicity k,
+        one firing represents k product/case inputs.
+        """
+        mults = [
+            int(getattr(arc, "multiplicity", 1) or 1)
+            for arc in getattr(transition, "input_arcs", [])
+        ]
+        return max(mults) if mults else 1
+
+    def _transition_output_product_multiplier(transition: Transition) -> int:
+        """
+        For output KPI:
+        if the output transition produces product tokens with multiplicity k,
+        one firing represents k product/case outputs.
+        """
+        mults = [
+            int(getattr(arc, "multiplicity", 1) or 1)
+            for arc in getattr(transition, "output_arcs", [])
+        ]
+        return max(mults) if mults else 1
+
+    # Calculate input and output values for transitions
     for transition in spn.transitions:
         if transition.input_transition:
-            transition.input_value = transition.n_times_fired
+            transition.input_value = (
+                    transition.n_times_fired
+                    * _transition_input_product_multiplier(transition)
+            )
+
         if transition.output_transition:
-            transition.output_value = transition.n_times_fired
+            transition.output_value = (
+                    transition.n_times_fired
+                    * _transition_output_product_multiplier(transition)
+            )
 
     for transition in spn.transitions:
         if hasattr(transition, 'input_value'):
@@ -1417,6 +1552,7 @@ def simulate(spn: SPN, max_time=10, start_time=0, time_unit=None, verbosity=2, p
         if hasattr(transition, 'output_value'):
             print(f"Output value for {transition.label}: {transition.output_value}")
     finalize_parallel_inprocess_rate_impacts(spn, SIMULATION_TIME)
+    finalize_enabled_timed_rate_impacts(spn, SIMULATION_TIME)
     finalize_immediate_dot_full_rate_impacts(spn, SIMULATION_TIME)
     dimension_totals = {}
 
