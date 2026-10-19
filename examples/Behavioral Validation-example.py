@@ -18,16 +18,16 @@ from components.spn import SPN
 # ---------------------------------------
 Total_Dimensions = [
     "time",
-    "Battery",
-    "Energy",
+    "Battery state",
+    "Grid use",
     "Cost"
 ]
 
 spn = SPN(
     dimensions=Total_Dimensions,
     initial_dimension_values={
-        "Battery": 40.0,
-        "Energy": 0.0,
+        "Battery state": 40.0,
+        "Grid use": 0.0,
         "Cost": 0.0
     }
 )
@@ -48,22 +48,22 @@ p5 = Place("Robot Charging", 0)
 # Mt1: Start Processing (immediate)
 Mt1 = Transition("Start Processing", "I")
 Mt1.set_guard_function(
-    lambda: spn.get_dimension_value("Battery") > 30
+    lambda: spn.get_dimension_value("Battery state") > 30
 )
 
 # Mt2: Complete Processing (timed)
 Mt2 = Transition("Complete Processing", "T")
 Mt2.set_distribution("det", a=3)
 
-Mt2.add_dimension_change("Battery", "fixed", -15)
-Mt2.add_dimension_change("Energy", "rate", 2)
+Mt2.add_dimension_change("Battery state", "fixed", -15)
+Mt2.add_dimension_change("Grid use", "rate", 2)
 Mt2.add_dimension_change("Cost", "fixed", 4)
 
 # Mt3: Start Charging (immediate)
 Mt3 = Transition("Start Charging", "I")
 Mt3.set_guard_function(
     lambda: (
-        spn.get_dimension_value("Battery") <= 30
+        spn.get_dimension_value("Battery state") <= 30
         and len(p1.tokens) > 0
     )
 )
@@ -72,7 +72,7 @@ Mt3.set_guard_function(
 Mt4 = Transition("Complete Charging", "T")
 Mt4.set_distribution("det", a=2)
 
-Mt4.add_dimension_change("Battery", "fixed", 20)
+Mt4.add_dimension_change("Battery state", "fixed", 20)
 
 # ---------------------------------------
 # 4. Add places
