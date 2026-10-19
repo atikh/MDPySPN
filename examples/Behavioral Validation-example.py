@@ -130,6 +130,3 @@ if __name__ == "__main__":
     for p in spn.places:
         print(p.label, len(p.tokens))
 
-    print("\nFinal dimension values:")
-    for dim in ["Battery", "Energy", "Cost"]:
-        print(dim, spn.get_dimension_value(dim))
